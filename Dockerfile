@@ -3,16 +3,16 @@ FROM amazoncorretto:21-alpine-jdk AS build
 WORKDIR /workspace/app
 
 COPY . /workspace/app
-RUN --mount=type=cache,target=/root/.gradle ./gradlew clean build -x test
+RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon clean build -x test
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHOT.jar)
 
 FROM build as test
-RUN --mount=type=cache,target=/root/.gradle ./gradlew -Dtest.ignoreFailures=true test
+RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true test
 
 FROM test as sonar
 ARG SONAR_TOKEN
 ENV SONAR_TOKEN=$SONAR_TOKEN
-RUN --mount=type=cache,target=/root/.gradle ./gradlew sonar
+RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon sonar
 
 FROM scratch as results
 COPY --from=test /workspace/app/build/test-results ./test-results

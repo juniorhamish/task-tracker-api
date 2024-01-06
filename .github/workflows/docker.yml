@@ -24,7 +24,7 @@ jobs:
     - name: Export Reports
       run: DOCKER_BUILDKIT=1 docker build --target results . --output out
     - name: List files
-      run: ls -al
+      run: ls -al out/test-results
     - name: Report
       uses: dorny/test-reporter@v1
       if: always()
