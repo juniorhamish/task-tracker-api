@@ -15,7 +15,7 @@ ENV SONAR_TOKEN=$SONAR_TOKEN
 RUN --mount=type=cache,target=/root/.gradle ./gradlew sonar
 
 FROM scratch as results
-COPY --from=test /workspace/app/build/reports .
+COPY --from=test /workspace/app/build/test-results ./test-results
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
