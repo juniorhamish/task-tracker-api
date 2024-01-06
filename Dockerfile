@@ -10,6 +10,8 @@ FROM build as test
 RUN --mount=type=cache,target=/root/.gradle ./gradlew -Dtest.ignoreFailures=true test
 
 FROM test as sonar
+ARG SONAR_TOKEN
+ENV SONAR_TOKEN=$SONAR_TOKEN
 RUN --mount=type=cache,target=/root/.gradle ./gradlew sonar
 
 FROM scratch as results
