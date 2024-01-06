@@ -11,6 +11,7 @@ RUN --mount=type=cache,target=/root/.gradle ./gradlew -Dtest.ignoreFailures=true
 
 FROM scratch as results
 COPY --from=test /workspace/app/build/reports .
+COPY --from=test /workspace/app/build/jacoco .
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
