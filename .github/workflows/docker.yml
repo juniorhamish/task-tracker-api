@@ -23,14 +23,12 @@ jobs:
       run: DOCKER_BUILDKIT=1 docker build --target test .
     - name: Export Reports
       run: DOCKER_BUILDKIT=1 docker build --target results . --output out
-    - name: List files
-      run: ls -al out/test-results
     - name: Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
         name: Gradle Tests
-        path: out/test-results/*.xml
+        path: out/test-results/test/*.xml
         reporter: java-junit
         fail-on-error: true
     - name: Sonar
