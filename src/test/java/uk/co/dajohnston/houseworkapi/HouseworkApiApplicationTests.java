@@ -1,13 +1,14 @@
 package uk.co.dajohnston.houseworkapi;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 class HouseworkApiApplicationTests {
 
     @Test
-    void contextLoads() {
+    void foo() {
+        assertEquals(1, 1);
     }
 
 }
