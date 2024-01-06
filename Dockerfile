@@ -9,9 +9,11 @@ RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHO
 FROM build as test
 RUN --mount=type=cache,target=/root/.gradle ./gradlew -Dtest.ignoreFailures=true test
 
+FROM test as sonar
+RUN --mount=type=cache,target=/root/.gradle ./gradlew sonar
+
 FROM scratch as results
 COPY --from=test /workspace/app/build/reports .
-COPY --from=test /workspace/app/build/jacoco .
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
