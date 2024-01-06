@@ -36,8 +36,9 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 test {
-    finalizedBy jacocoTestReport // report is always generated after tests run
+    ignoreFailures Boolean.getBoolean("test.ignoreFailures")
+    finalizedBy jacocoTestReport
 }
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+    dependsOn test
 }
