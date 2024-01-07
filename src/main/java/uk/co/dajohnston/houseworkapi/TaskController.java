@@ -27,6 +27,7 @@ public class TaskController {
 
   @PostMapping("/tasks")
   public Task saveTask(@RequestBody Task task) {
-    return tasks.put(task.id(), task);
+    tasks.put(task.id(), task);
+    return task;
   }
 }
