@@ -16,8 +16,8 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Unshallow
-      run: git fetch --unshallow
+      with:
+        fetch-depth: 0
     - name: Build
       run: DOCKER_BUILDKIT=1 docker build --target build .
     - name: Test
@@ -32,5 +32,15 @@ jobs:
         path: out/test-results/test/*.xml
         reporter: java-junit
         fail-on-error: true
-    - name: Sonar
+    - name: Sonar Main
+      if: github.event.pull_request.base.ref == null
       run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --target sonar .
+    - name: Sonar PR
+      if: github.event.pull_request.base.ref != null
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: echo ${{ github.head_ref }}
+           echo ${{ github.event.number }}
+           echo ${{ github.event.pull_request.base.ref }}
+           DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
+

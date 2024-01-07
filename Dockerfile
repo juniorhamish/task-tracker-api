@@ -9,10 +9,18 @@ RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*-SNAPSHO
 FROM build as test
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true test
 
-FROM test as sonar
+FROM test as prepare-sonar
 ARG SONAR_TOKEN
 ENV SONAR_TOKEN=$SONAR_TOKEN
+
+FROM prepare-sonar as sonar
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon sonar
+
+FROM prepare-sonar as sonar-pr
+ARG sonar_pull_request_branch_name
+ARG sonar_pull_request_key
+ARG sonar_pull_request_base
+RUN --mount=type=cache,target=/root/.gradle ./gradlew -Dsonar.pullrequest.branch=$sonar_pull_request_branch_name -Dsonar.pullrequest.base=$sonar_pull_request_base -Dsonar.pullrequest.key=$sonar_pull_request_key --no-daemon sonar
 
 FROM scratch as results
 COPY --from=test /workspace/app/build/test-results ./test-results
