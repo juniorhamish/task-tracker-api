@@ -13,6 +13,8 @@ jobs:
   build:
     permissions: write-all
     runs-on: ubuntu-latest
+    env:
+      REPO: ${{ secrets.DOCKER_REPO }}
     steps:
     - name: Checkout
       uses: actions/checkout@v4
@@ -40,4 +42,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
-
+    - name: Log in to Docker Hub
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: docker login -u ${{ secrets.DOCKER_USER }}
+        -p ${{ secrets.DOCKER_PASS }}
+    - name: Build Docker image
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: DOCKER_BUILDKIT=1 docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+    - name: Publish Docker image
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: docker push $REPO
