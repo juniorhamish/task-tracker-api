@@ -39,8 +39,5 @@ jobs:
       if: github.event.pull_request.base.ref != null
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: echo ${{ github.head_ref }}
-           echo ${{ github.event.number }}
-           echo ${{ github.event.pull_request.base.ref }}
-           DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
+      run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
 
