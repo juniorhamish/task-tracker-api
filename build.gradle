@@ -13,6 +13,10 @@ java {
     sourceCompatibility = '21'
 }
 
+tasks.named("jar") {
+    enabled = false
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
