@@ -28,6 +28,6 @@ public class TaskController {
   @PostMapping("/tasks")
   public Task saveTask(@RequestBody Task task) {
     tasks.put(task.id(), task);
-    return new Task(1234, "Test");
+    return task;
   }
 }
