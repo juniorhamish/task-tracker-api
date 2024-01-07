@@ -52,3 +52,10 @@ jobs:
     - name: Publish Docker image
       if: ${{ github.ref == 'refs/heads/main' }}
       run: docker push $REPO
+    - name: Deploy
+      if: ${{ github.ref == 'refs/heads/main' }}
+      uses: johnbeynon/render-deploy-action@v0.0.8
+      with:
+        service-id: ${{ secrets.RENDER_SERVICE_ID }}
+        api-key: ${{ secrets.RENDER_API_KEY }}
+        wait-for-success: true
