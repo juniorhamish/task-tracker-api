@@ -1,13 +1,13 @@
 package uk.co.dajohnston.houseworkapi;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 class TaskControllerTest {
 
-    @Test
-    void tasks_shouldReturnTaskList() {
-        assertEquals(0, new TaskController().tasks().size());
-    }
+  @Test
+  void tasks_shouldReturnTaskList() {
+    assertEquals(0, new TaskController().tasks().size());
+  }
 }
