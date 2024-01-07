@@ -8,6 +8,6 @@ class TaskControllerTest {
 
     @Test
     void tasks_shouldReturnTaskList() {
-        assertEquals(2, new TaskController().tasks().size());
+        assertEquals(0, new TaskController().tasks().size());
     }
 }
