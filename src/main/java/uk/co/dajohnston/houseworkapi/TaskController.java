@@ -21,6 +21,6 @@ public class TaskController {
 
     @GetMapping("/task/{id}")
     public Task task(@PathVariable long id) {
-        return new Task(id, "Task");
+        return new Task(id, "Task Name");
     }
 }
