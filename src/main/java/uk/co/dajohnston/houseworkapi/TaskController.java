@@ -19,7 +19,7 @@ public class TaskController {
 
   @GetMapping("/tasks")
   public List<Task> tasks() {
-    log.warn("Getting all tasks");
+    log.info("Getting all tasks");
     return new ArrayList<>(tasks.values());
   }
 
