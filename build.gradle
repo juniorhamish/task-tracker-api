@@ -66,6 +66,7 @@ tasks.register('integrationTest', Test) {
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     shouldRunAfter test
+    ignoreFailures Boolean.getBoolean("test.ignoreFailures")
     finalizedBy jacocoTestReport
 
     useJUnitPlatform()

@@ -31,7 +31,7 @@ jobs:
       if: always()
       with:
         name: Gradle Tests
-        path: out/test-results/test/*.xml
+        path: out/test-results/**/*.xml
         reporter: java-junit
         fail-on-error: true
     - name: Sonar Main

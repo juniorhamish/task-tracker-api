@@ -7,7 +7,7 @@ RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon clean build -x
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build as test
-RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true test
+RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true check
 
 FROM test as prepare-sonar
 ARG SONAR_TOKEN
