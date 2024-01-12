@@ -23,7 +23,7 @@ jobs:
     - name: Build
       run: DOCKER_BUILDKIT=1 docker build --target build .
     - name: Test
-      run: DOCKER_BUILDKIT=1 docker build --build-arg 'SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}' --build-arg 'SPRING_DATA_MONGODB_DATABASE=housework_api_integration_tests_${{ github.head_ref || github.ref_name }}' --target test .
+      run: DOCKER_BUILDKIT=1 docker build --build-arg 'SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}' --build-arg 'SPRING_DATA_MONGODB_DATABASE=housework_api_integration_test_${{ github.head_ref || github.ref_name }}' --target test .
     - name: Export Reports
       run: DOCKER_BUILDKIT=1 docker build --target results . --output out
     - name: Report
