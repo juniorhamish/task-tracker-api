@@ -4,6 +4,7 @@ plugins {
     id 'org.springframework.boot' version '3.2.1'
     id 'io.spring.dependency-management' version '1.1.4'
     id "org.sonarqube" version "4.4.1.3373"
+    id 'idea'
 }
 
 group = 'uk.co.dajohnston'
@@ -17,9 +18,22 @@ tasks.named("jar") {
     enabled = false
 }
 
+sourceSets {
+    integrationTest {
+        compileClasspath += sourceSets.main.output
+        runtimeClasspath += sourceSets.main.output
+    }
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
+    }
+    integrationTestImplementation {
+        extendsFrom testImplementation
+    }
+    integrationTestRuntimeOnly {
+        extendsFrom testRuntimeOnly
     }
 }
 
@@ -45,9 +59,29 @@ test {
     ignoreFailures Boolean.getBoolean("test.ignoreFailures")
     finalizedBy jacocoTestReport
 }
+tasks.register('integrationTest', Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter test
+    finalizedBy jacocoTestReport
+
+    useJUnitPlatform()
+}
 jacocoTestReport {
-    dependsOn test
+    dependsOn test, integrationTest
+    executionData(integrationTest)
     reports {
         xml.required = true
+    }
+}
+
+check.dependsOn integrationTest
+
+idea {
+    module {
+        testSources.from(sourceSets.integrationTest.java.srcDirs)
     }
 }
