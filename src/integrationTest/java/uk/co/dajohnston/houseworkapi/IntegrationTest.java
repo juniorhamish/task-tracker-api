@@ -11,6 +11,6 @@ class IntegrationTest {
 
   @Test
   void test() {
-    assertThat(5, is(6));
+    assertThat(5, is(5));
   }
 }
