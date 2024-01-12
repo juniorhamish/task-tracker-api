@@ -1,6 +1,7 @@
 package uk.co.dajohnston.houseworkapi;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ class IntegrationTest {
 
   @Test
   void test() throws Exception {
+    mockMvc.perform(post("/tasks").content("{\"name\": \"DJ\"}")).andExpect(status().isCreated());
     mockMvc.perform(get("/tasks")).andExpect(status().isOk());
   }
 }
