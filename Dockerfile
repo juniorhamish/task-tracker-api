@@ -7,6 +7,10 @@ RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon clean build -x
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build as test
+ARG SPRING_DATA_MONGODB_URI
+ENV SPRING_DATA_MONGODB_URI=$SPRING_DATA_MONGODB_URI
+ARG SPRING_DATA_MONGODB_DATABASE
+ENV SPRING_DATA_MONGODB_DATABASE=$SPRING_DATA_MONGODB_DATABASE
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true check
 
 FROM test as prepare-sonar
