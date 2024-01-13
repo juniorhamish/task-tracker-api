@@ -15,17 +15,18 @@ jobs:
     runs-on: ubuntu-latest
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
+      DOCKER_BUILDKIT: 1
     steps:
     - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Build
-      run: DOCKER_BUILDKIT=1 docker build --target build .
+      run: docker build --target build .
     - name: Test
-      run: DOCKER_BUILDKIT=1 docker build --build-arg 'SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}' --build-arg 'SPRING_DATA_MONGODB_DATABASE=housework_api_integration_test_${{ github.head_ref || github.ref_name }}' --target test .
+      run: docker build --build-arg 'MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }}' --build-arg 'MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}' --build-arg 'MONGODB_HOST=${{ secrets.MONGODB_HOST }}' --build-arg 'SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }}' --build-arg 'SPRING_DATA_MONGODB_DATABASE=housework_api_integration_test_${{ github.head_ref || github.ref_name }}' --target test .
     - name: Export Reports
-      run: DOCKER_BUILDKIT=1 docker build --target results . --output out
+      run: docker build --target results . --output out
     - name: Report
       uses: dorny/test-reporter@v1
       if: always()
@@ -36,19 +37,19 @@ jobs:
         fail-on-error: true
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
-      run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --target sonar .
+      run: docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --target sonar .
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
+      run: docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
     - name: Log in to Docker Hub
       if: ${{ github.ref == 'refs/heads/main' }}
       run: docker login -u ${{ secrets.DOCKER_USER }}
         -p ${{ secrets.DOCKER_PASS }}
     - name: Build Docker image
       if: ${{ github.ref == 'refs/heads/main' }}
-      run: DOCKER_BUILDKIT=1 docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
+      run: docker build -t $REPO:latest -t $REPO:${GITHUB_SHA::8} .
     - name: Publish Docker image
       if: ${{ github.ref == 'refs/heads/main' }}
       run: docker push $REPO
