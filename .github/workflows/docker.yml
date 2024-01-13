@@ -24,7 +24,7 @@ jobs:
     - name: Build
       run: docker build --target build .
     - name: Test
-      run: docker build --build-arg 'MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }}' --build-arg 'MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}' --build-arg 'MONGODB_HOST=${{ secrets.MONGODB_HOST }}' --build-arg 'SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }}' --build-arg 'SPRING_DATA_MONGODB_DATABASE=housework_api_IT_${{ github.head_ref || github.ref_name }}' --target test .
+      run: docker build --build-arg 'MONGODB_USERNAME=${{ secrets.MONGODB_USERNAME }}' --build-arg 'MONGODB_PASSWORD=${{ secrets.MONGODB_PASSWORD }}' --build-arg 'MONGODB_HOST=${{ secrets.MONGODB_HOST }}' --build-arg 'SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }}' --build-arg 'MONGODB_DATABASE=housework_api_IT_${{ github.head_ref || github.ref_name }}' --target test .
     - name: Export Reports
       run: docker build --target results . --output out
     - name: Report
