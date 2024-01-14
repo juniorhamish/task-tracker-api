@@ -27,6 +27,7 @@ jobs:
       with:
         context: .
         target: build
+        load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Test
@@ -34,6 +35,7 @@ jobs:
       with:
         context: .
         target: test
+        load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Reports
@@ -41,6 +43,7 @@ jobs:
       with:
         context: .
         target: results
+        load: true
         outputs: type=local,dest=out
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -61,6 +64,7 @@ jobs:
       with:
         context: .
         target: sonar-pr
+        load: true
         build-args: |
           sonar_pull_request_branch_name=${{ github.head_ref }}
           sonar_pull_request_key=${{ github.event.number }}
