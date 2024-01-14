@@ -57,7 +57,18 @@ jobs:
       run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --target sonar .
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
-      run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --build-arg sonar_pull_request_branch_name=${{ github.head_ref }} --build-arg sonar_pull_request_key=${{ github.event.number }} --build-arg sonar_pull_request_base=${{ github.event.pull_request.base.ref }} --target sonar-pr .
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: sonar-pr
+        build-args: |
+          sonar_pull_request_branch_name=${{ github.head_ref }}
+          sonar_pull_request_key=${{ github.event.number }}
+          sonar_pull_request_base=${{ github.event.pull_request.base.ref }}
+        secrets: |
+          SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
     - name: Log in to Docker Hub
       if: ${{ github.ref == 'refs/heads/main' }}
       run: docker login -u ${{ secrets.DOCKER_USER }}
