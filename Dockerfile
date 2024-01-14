@@ -15,7 +15,7 @@ ENV SONAR_TOKEN=$SONAR_TOKEN
 FROM prepare-sonar as sonar
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon sonar
 
-FROM prepare-sonar as sonar-pr
+FROM test as sonar-pr
 ARG sonar_pull_request_branch_name
 ARG sonar_pull_request_key
 ARG sonar_pull_request_base
