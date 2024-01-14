@@ -20,7 +20,12 @@ FROM prepare-sonar as sonar-pr
 ARG sonar_pull_request_branch_name
 ARG sonar_pull_request_key
 ARG sonar_pull_request_base
-RUN --mount=type=cache,target=/root/.gradle ./gradlew -Dsonar.pullrequest.branch=$sonar_pull_request_branch_name -Dsonar.pullrequest.base=$sonar_pull_request_base -Dsonar.pullrequest.key=$sonar_pull_request_key --no-daemon sonar
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew --no-daemon \
+    -Dsonar.pullrequest.branch=$sonar_pull_request_branch_name \
+    -Dsonar.pullrequest.base=$sonar_pull_request_base \
+    -Dsonar.pullrequest.key=$sonar_pull_request_key \
+    sonar
 
 FROM scratch as results
 COPY --from=test /workspace/app/build/test-results ./test-results
