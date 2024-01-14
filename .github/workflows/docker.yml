@@ -43,7 +43,6 @@ jobs:
       with:
         context: .
         target: results
-        load: true
         outputs: type=local,dest=out
         cache-from: type=gha
         cache-to: type=gha,mode=max
