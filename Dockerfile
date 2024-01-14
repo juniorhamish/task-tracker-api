@@ -17,7 +17,7 @@ ARG MONGODB_DATABASE
 ENV MONGODB_DATABASE=$MONGODB_DATABASE
 ARG SPRING_PROFILES_ACTIVE
 ENV SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
-RUN echo $MONGODB_DATABASE
+RUN echo $MONGODB_HOST
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true check
 
 FROM test as prepare-sonar
