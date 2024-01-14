@@ -20,6 +20,8 @@ ARG sonar_pull_request_branch_name
 ARG sonar_pull_request_key
 ARG sonar_pull_request_base
 RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=secret,id=SONAR_TOKEN \
+    export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
     ./gradlew --no-daemon \
     -Dsonar.pullrequest.branch=$sonar_pull_request_branch_name \
     -Dsonar.pullrequest.base=$sonar_pull_request_base \
