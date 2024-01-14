@@ -7,18 +7,18 @@ RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon clean build -x
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build as test
-ARG MONGODB_USERNAME
-ENV MONGODB_USERNAME=$MONGODB_USERNAME
-ARG MONGODB_PASSWORD
-ENV MONGODB_PASSWORD=$MONGODB_PASSWORD
-ARG MONGODB_HOST
-ENV MONGODB_HOST=$MONGODB_HOST
-ARG MONGODB_DATABASE
-ENV MONGODB_DATABASE=$MONGODB_DATABASE
-ARG SPRING_PROFILES_ACTIVE
-ENV SPRING_PROFILES_ACTIVE=$SPRING_PROFILES_ACTIVE
-RUN echo $MONGODB_HOST
-RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true check
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=secret,id=MONGODB_USERNAME \
+    --mount=type=secret,id=MONGODB_PASSWORD \
+    --mount=type=secret,id=MONGODB_HOST \
+    --mount=type=secret,id=SPRING_PROFILES_ACTIVE \
+    --mount=type=secret,id=MONGODB_DATABASE \
+    export MONGODB_USERNAME=$(cat /run/secrets/MONGODB_USERNAME) && \
+    export MONGODB_PASSWORD=$(cat /run/secrets/MONGODB_PASSWORD) && \
+    export MONGODB_HOST=$(cat /run/secrets/MONGODB_HOST) && \
+    export SPRING_PROFILES_ACTIVE=$(cat /run/secrets/SPRING_PROFILES_ACTIVE) && \
+    export MONGODB_DATABASE=$(cat /run/secrets/MONGODB_DATABASE) && \
+    ./gradlew --no-daemon -Dtest.ignoreFailures=true check
 
 FROM test as prepare-sonar
 ARG SONAR_TOKEN
