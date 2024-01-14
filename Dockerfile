@@ -8,12 +8,12 @@ RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 FROM build as test
 RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon -Dtest.ignoreFailures=true test
 
-FROM test as prepare-sonar
-ARG SONAR_TOKEN
-ENV SONAR_TOKEN=$SONAR_TOKEN
-
-FROM prepare-sonar as sonar
-RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon sonar
+FROM test as sonar
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=secret,id=SONAR_TOKEN \
+    export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
+    ./gradlew --no-daemon \
+    sonar
 
 FROM test as sonar-pr
 ARG sonar_pull_request_branch_name

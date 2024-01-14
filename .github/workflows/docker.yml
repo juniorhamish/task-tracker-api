@@ -27,7 +27,6 @@ jobs:
       with:
         context: .
         target: build
-        load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Test
@@ -35,7 +34,6 @@ jobs:
       with:
         context: .
         target: test
-        load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Reports
@@ -56,14 +54,20 @@ jobs:
         fail-on-error: true
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
-      run: DOCKER_BUILDKIT=1 docker build --build-arg SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} --target sonar .
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: sonar
+        secrets: |
+          SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
       uses: docker/build-push-action@v5
       with:
         context: .
         target: sonar-pr
-        load: true
         build-args: |
           sonar_pull_request_branch_name=${{ github.head_ref }}
           sonar_pull_request_key=${{ github.event.number }}
