@@ -44,7 +44,7 @@ jobs:
         load: true
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Export Reports
+    - name: Export Unit Test Reports
       uses: docker/build-push-action@v5
       with:
         context: .
@@ -71,7 +71,7 @@ jobs:
           SPRING_DATA_MONGODB_DATABASE="housework_api_IT_${{ github.head_ref || github.ref_name }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Export Reports
+    - name: Export Integration Test Reports
       uses: docker/build-push-action@v5
       with:
         context: .
