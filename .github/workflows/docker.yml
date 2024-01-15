@@ -67,7 +67,7 @@ jobs:
         target: integration-test
         load: true
         secrets: |
-          "SPRING_DATA_MONGODB_URI=mongodb+srv://housework.rbdivxd.mongodb.net/?retryWrites=true&w=majority"
+          "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
           "SPRING_DATA_MONGODB_DATABASE=housework_api_IT_${{ github.head_ref || github.ref_name }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
