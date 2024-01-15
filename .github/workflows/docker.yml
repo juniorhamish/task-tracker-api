@@ -67,8 +67,8 @@ jobs:
         target: integration-test
         load: true
         secrets: |
-          SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}
-          SPRING_DATA_MONGODB_DATABASE=${{ secrets.SPRING_DATA_MONGODB_DATABASE }}
+          SPRING_DATA_MONGODB_URI="${{ secrets.SPRING_DATA_MONGODB_URI }}"
+          SPRING_DATA_MONGODB_DATABASE="housework_api_IT_${{ github.head_ref || github.ref_name }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Reports
