@@ -47,7 +47,7 @@ FROM scratch as unit-test-results
 COPY --from=test /workspace/app/build/test-results/test ./test-results/test
 
 FROM scratch as integration-test-results
-COPY --from=integration-test /workspace/app/build/integrationTest ./test-results/integrationTest
+COPY --from=integration-test /workspace/app/build/test-results/integrationTest ./test-results/integrationTest
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
