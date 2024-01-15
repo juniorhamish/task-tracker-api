@@ -25,7 +25,6 @@ jobs:
     - name: Build
       uses: docker/build-push-action@v5
       with:
-        context: .
         target: build
         load: true
         cache-from: type=gha
@@ -33,7 +32,6 @@ jobs:
     - name: Test
       uses: docker/build-push-action@v5
       with:
-        context: .
         target: test
         load: true
         cache-from: type=gha
@@ -41,7 +39,6 @@ jobs:
     - name: Export Reports
       uses: docker/build-push-action@v5
       with:
-        context: .
         target: results
         outputs: type=local,dest=out
         cache-from: type=gha
@@ -58,7 +55,6 @@ jobs:
       if: github.event.pull_request.base.ref == null
       uses: docker/build-push-action@v5
       with:
-        context: .
         target: sonar
         load: true
         secrets: |
@@ -69,7 +65,6 @@ jobs:
       if: github.event.pull_request.base.ref != null
       uses: docker/build-push-action@v5
       with:
-        context: .
         target: sonar-pr
         load: true
         build-args: |
@@ -90,7 +85,6 @@ jobs:
       if: ${{ github.ref == 'refs/heads/main' }}
       uses: docker/build-push-action@v5
       with:
-        context: .
         push: true
         tags: |
           $REPO:latest
