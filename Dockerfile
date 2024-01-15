@@ -2,7 +2,9 @@
 FROM amazoncorretto:21-alpine-jdk AS build
 WORKDIR /workspace/app
 COPY . /workspace/app
-RUN --mount=type=cache,target=/root/.gradle ./gradlew --no-daemon clean build -x test
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew --no-daemon \
+    clean build -x test -x integrationTest
 RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build as test
