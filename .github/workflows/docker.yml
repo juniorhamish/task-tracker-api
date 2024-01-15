@@ -16,7 +16,7 @@ jobs:
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
     steps:
-    - name: Checkout Code
+    - name: Checkout
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
