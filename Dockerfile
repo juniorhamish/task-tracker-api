@@ -17,8 +17,6 @@ FROM test as integration-test
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SPRING_DATA_MONGODB_URI \
     --mount=type=secret,id=SPRING_DATA_MONGODB_DATABASE \
-    cat /run/secrets/SPRING_DATA_MONGODB_URI && \
-    cat /run/secrets/SPRING_DATA_MONGODB_DATABASE && \
     export SPRING_DATA_MONGODB_URI=$(cat /run/secrets/SPRING_DATA_MONGODB_URI) && \
     export SPRING_DATA_MONGODB_DATABASE=$(cat /run/secrets/SPRING_DATA_MONGODB_DATABASE) && \
     ./gradlew --no-daemon \
