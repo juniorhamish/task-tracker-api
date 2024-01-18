@@ -1,0 +1,10 @@
+spring:
+  data:
+    mongodb:
+      database: housework-api
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          audiences: https://housework-api.onrender.com
+          issuer-uri: https://dajohnston.eu.auth0.com/
