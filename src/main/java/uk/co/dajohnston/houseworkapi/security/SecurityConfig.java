@@ -15,7 +15,9 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/tasks")
+    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**")
+                                                     .permitAll()
+                                                     .requestMatchers("/tasks")
                                                      .access(hasScope("read:tasks"))
                                                      .anyRequest()
                                                      .authenticated())
