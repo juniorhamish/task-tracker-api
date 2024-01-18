@@ -1,5 +1,6 @@
 package uk.co.dajohnston.houseworkapi;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -11,10 +12,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class IntegrationTest {
+class TasksAPITest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -27,8 +29,13 @@ class IntegrationTest {
   }
 
   @Test
-  void test() throws Exception {
-    mockMvc.perform(post("/tasks").content("{\"name\": \"DJ\"}")).andExpect(status().isCreated());
-    mockMvc.perform(get("/tasks")).andExpect(status().isOk());
+  @WithMockJWT(authorities = "SCOPE_read:tasks")
+  void post_tasks_createsNewTask() throws Exception {
+    mockMvc.perform(post("/tasks").content("{\"name\": \"DJ\"}")
+                                  .with(csrf()))
+           .andExpect(status().isCreated());
+
+    mockMvc.perform(get("/tasks").with(csrf()))
+           .andExpect(status().isOk());
   }
 }
