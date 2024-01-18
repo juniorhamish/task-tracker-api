@@ -19,7 +19,7 @@ public class SecurityConfig {
                                                      .access(hasScope("read:tasks"))
                                                      .anyRequest()
                                                      .authenticated())
-        .oauth2ResourceServer((oauth2) -> oauth2.jwt(withDefaults()));
+        .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
     return http.build();
   }
 }
