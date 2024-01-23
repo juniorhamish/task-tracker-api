@@ -1,9 +1,11 @@
 package uk.co.dajohnston.houseworkapi.users;
 
+import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,9 +28,10 @@ class UsersControllerTest {
   private UsersService usersService;
 
   @Test
-  void create_returnsCreatedUser() throws Exception {
+  void post_returnsCreatedUser() throws Exception {
     when(usersService.create(any())).thenReturn(
         new User("First", "Last", "first.last@example.com"));
+
     mockMvc.perform(post("/users").content("""
                                       {
                                         "firstName": "David",
@@ -61,7 +64,7 @@ class UsersControllerTest {
   }
 
   @Test
-  void create_usesServiceToCreateUser() throws Exception {
+  void post_usesServiceToCreateUser() throws Exception {
     mockMvc.perform(post("/users").content("""
                                       {
                                         "firstName": "David",
@@ -72,5 +75,22 @@ class UsersControllerTest {
                                   .contentType(APPLICATION_JSON));
 
     verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
+  }
+
+  @Test
+  void get_returnsAllUsers() throws Exception {
+    when(usersService.findAll()).thenReturn(
+        singletonList(new User("David", "Johnston", "david.johnston@example.com")));
+
+    mockMvc.perform(get("/users"))
+           .andExpect(content().json("""
+               [
+                 {
+                   "firstName": "David",
+                   "lastName": "Johnston",
+                   "emailAddress": "david.johnston@example.com"
+                 }
+               ]
+               """));
   }
 }
