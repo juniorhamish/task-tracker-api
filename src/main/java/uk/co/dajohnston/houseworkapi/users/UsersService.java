@@ -13,8 +13,7 @@ public class UsersService {
   private final UsersRepository usersRepository;
 
   public User create(User user) {
-    usersRepository.save(user);
-    return null;
+    return usersRepository.save(user);
   }
 
   public List<User> findAll() {

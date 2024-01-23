@@ -1,11 +1,14 @@
 package uk.co.dajohnston.houseworkapi.users;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -16,14 +19,30 @@ class UsersServiceTest {
 
   @Mock
   private UsersRepository usersRepository;
+  private UsersService usersService;
+
+  @BeforeEach
+  void setUp() {
+    usersService = new UsersService(usersRepository);
+  }
 
   @Test
   void create_savesUserToRepository() {
     User user = new User("David", "Johnston", "david.johnston@example.com");
 
-    new UsersService(usersRepository).create(user);
+    usersService.create(user);
 
     verify(usersRepository).save(user);
+  }
+
+  @Test
+  void create_returnsSavedUser() {
+    User user = new User("David", "Johnston", "david.johnston@example.com");
+    when(usersRepository.save(any())).thenReturn(user);
+
+    User result = usersService.create(new User(null, null, null));
+
+    assertThat(result, is(user));
   }
 
   @Test
@@ -32,7 +51,7 @@ class UsersServiceTest {
         List.of(new User("David", "Johnston", "david.johnston@example.com"),
             new User("Bobby", "Davro", "bobby.davro@example.com")));
 
-    List<User> users = new UsersService(usersRepository).findAll();
+    List<User> users = usersService.findAll();
 
     assertThat(users, contains(new User("David", "Johnston", "david.johnston@example.com"),
         new User("Bobby", "Davro", "bobby.davro@example.com")));
