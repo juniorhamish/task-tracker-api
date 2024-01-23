@@ -1,14 +1,7 @@
 # syntax=docker/dockerfile:experimental
 FROM amazoncorretto:21-alpine-jdk AS build
 WORKDIR /workspace/app
-COPY ./gradle ./gradle
-COPY gradlew .
-COPY lombok.config .
-COPY settings.gradle .
-COPY gradle.properties .
-COPY .git ./.git
-COPY build.gradle .
-COPY ./src ./src
+COPY . /workspace/app
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew --no-daemon \
     clean build -x test -x integrationTest
