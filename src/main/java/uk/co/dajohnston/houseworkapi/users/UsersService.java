@@ -1,6 +1,7 @@
 package uk.co.dajohnston.houseworkapi.users;
 
-import java.util.ArrayList;
+import static java.util.stream.StreamSupport.stream;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,7 @@ public class UsersService {
   }
 
   public List<User> findAll() {
-    List<User> result = new ArrayList<>();
-    usersRepository.findAll().forEach(result::add);
-    return result;
+    return stream(usersRepository.findAll()
+                                 .spliterator(), false).toList();
   }
 }
