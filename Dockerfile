@@ -6,6 +6,7 @@ COPY gradlew .
 COPY lombok.config .
 COPY settings.gradle .
 COPY gradle.properties .
+COPY .git ./.git
 COPY build.gradle .
 COPY ./src ./src
 RUN --mount=type=cache,target=/root/.gradle \
