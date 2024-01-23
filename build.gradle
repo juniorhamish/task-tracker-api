@@ -44,7 +44,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
-    implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose'
@@ -54,6 +54,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation "org.mockito:mockito-core:5.9.0"
+    testImplementation "org.mockito:mockito-junit-jupiter:5.9.0"
 }
 
 tasks.named('test') {
@@ -87,5 +89,7 @@ check.dependsOn integrationTest
 idea {
     module {
         testSources.from(sourceSets.integrationTest.java.srcDirs)
+        downloadJavadoc = true
+        downloadSources = true
     }
 }

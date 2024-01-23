@@ -19,6 +19,8 @@ public class SecurityConfig {
                                                      .permitAll()
                                                      .requestMatchers("/tasks")
                                                      .access(hasScope("read:tasks"))
+                                                     .requestMatchers("/users")
+                                                     .authenticated()
                                                      .anyRequest()
                                                      .authenticated())
         .oauth2ResourceServer(oauth2 -> oauth2.jwt(withDefaults()));
