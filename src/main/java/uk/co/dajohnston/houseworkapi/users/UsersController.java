@@ -17,7 +17,6 @@ public class UsersController {
   @PostMapping("/users")
   @ResponseStatus(CREATED)
   public User create(@RequestBody User user) {
-    usersService.create(user);
-    return user;
+    return usersService.create(user);
   }
 }

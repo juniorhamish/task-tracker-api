@@ -1,42 +1,76 @@
 package uk.co.dajohnston.houseworkapi.users;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(UsersController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class UsersControllerTest {
 
-  @Mock
+  @Autowired
+  private MockMvc mockMvc;
+
+  @MockBean
   private UsersService usersService;
-  private UsersController usersController;
 
-  @BeforeEach
-  void setUp() {
-    usersController = new UsersController(usersService);
+  @Test
+  void create_returnsCreatedUser() throws Exception {
+    when(usersService.create(any())).thenReturn(
+        new User("First", "Last", "first.last@example.com"));
+    mockMvc.perform(post("/users").content("""
+                                      {
+                                        "firstName": "David",
+                                        "lastName": "Johnston",
+                                        "emailAddress": "david.johnston@example.com"
+                                      }
+                                      """)
+                                  .contentType(APPLICATION_JSON))
+           .andExpect(content().json("""
+               {
+                 "firstName": "First",
+                 "lastName": "Last",
+                 "emailAddress": "first.last@example.com"
+               }
+               """, true));
+  }
+
+
+  @Test
+  void post_returns201StatusCode() throws Exception {
+    mockMvc.perform(post("/users").content("""
+                                      {
+                                        "firstName": "David",
+                                        "lastName": "Johnston",
+                                        "emailAddress": "david.johnston@example.com"
+                                      }
+                                      """)
+                                  .contentType(APPLICATION_JSON))
+           .andExpect(status().isCreated());
   }
 
   @Test
-  void create_returnsCreatedUser() {
-    User user = new User();
+  void create_usesServiceToCreateUser() throws Exception {
+    mockMvc.perform(post("/users").content("""
+                                      {
+                                        "firstName": "David",
+                                        "lastName": "Johnston",
+                                        "emailAddress": "david.johnston@example.com"
+                                      }
+                                      """)
+                                  .contentType(APPLICATION_JSON));
 
-    var createdUser = usersController.create(user);
-
-    assertThat(createdUser, is(user));
-  }
-
-  @Test
-  void create_usesServiceToCreateUser() {
-    User user = new User();
-
-    usersController.create(user);
-
-    verify(usersService).create(user);
+    verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
   }
 }
