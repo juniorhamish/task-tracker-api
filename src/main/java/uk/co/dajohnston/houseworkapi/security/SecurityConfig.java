@@ -17,8 +17,6 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**")
                                                      .permitAll()
-                                                     .requestMatchers("/tasks")
-                                                     .access(hasScope("read:tasks"))
                                                      .requestMatchers("/users")
                                                      .authenticated()
                                                      .anyRequest()
