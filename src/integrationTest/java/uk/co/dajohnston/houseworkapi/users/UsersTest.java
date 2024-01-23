@@ -1,8 +1,10 @@
-package uk.co.dajohnston.houseworkapi;
+package uk.co.dajohnston.houseworkapi.users;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.AfterEach;
@@ -16,7 +18,7 @@ import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class TasksAPITest {
+class UsersTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -29,13 +31,29 @@ class TasksAPITest {
   }
 
   @Test
-  @WithMockJWT(authorities = "SCOPE_read:tasks")
-  void post_tasks_createsNewTask() throws Exception {
-    mockMvc.perform(post("/tasks").content("{\"name\": \"DJ\"}")
+  @WithMockJWT
+  void post_users_createsUser() throws Exception {
+    mockMvc.perform(post("/users").content("""
+                                      {
+                                        "firstName": "David",
+                                        "lastName": "Johnston",
+                                        "emailAddress": "david.johnston@example.com"
+                                      }
+                                      """)
+                                  .contentType(APPLICATION_JSON)
                                   .with(csrf()))
            .andExpect(status().isCreated());
 
-    mockMvc.perform(get("/tasks").with(csrf()))
-           .andExpect(status().isOk());
+    mockMvc.perform(get("/users").with(csrf()))
+           .andExpect(status().isOk())
+           .andExpect(content().json("""
+               [
+                 {
+                   "firstName": "David",
+                   "lastName": "Johnston",
+                   "emailAddress": "david.johnston@example.com"
+                 }
+               ]
+               """));
   }
 }
