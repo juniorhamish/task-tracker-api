@@ -2,6 +2,7 @@ package uk.co.dajohnston.houseworkapi.users;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,5 +80,25 @@ class UsersAuthorizationTest {
                                       """)
                                   .contentType(APPLICATION_JSON))
            .andExpect(status().isForbidden());
+  }
+
+  @Test
+  void get_noToken_returns401Response() throws Exception {
+    mockMvc.perform(get("/users"))
+           .andExpect(status().isUnauthorized());
+  }
+
+  @Test
+  @WithMockJWT
+  void get_tokenWithoutReadUsersScope_returns403Response() throws Exception {
+    mockMvc.perform(get("/users"))
+           .andExpect(status().isForbidden());
+  }
+
+  @Test
+  @WithMockJWT(authorities = "SCOPE_read:users")
+  void get_tokenWithReadUsersScope_returns200Response() throws Exception {
+    mockMvc.perform(get("/users"))
+           .andExpect(status().isOk());
   }
 }

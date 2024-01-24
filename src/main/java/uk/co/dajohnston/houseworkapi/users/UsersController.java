@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +19,13 @@ public class UsersController {
 
   @PostMapping("/users")
   @ResponseStatus(CREATED)
+  @PreAuthorize("hasAuthority('SCOPE_write:users')")
   public User create(@RequestBody User user) {
     return usersService.create(user);
   }
 
   @GetMapping("/users")
+  @PreAuthorize("hasAuthority('SCOPE_read:users')")
   public List<User> findAll() {
     return usersService.findAll();
   }
