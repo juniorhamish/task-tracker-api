@@ -117,4 +117,12 @@ class UsersAuthorizationTest {
 
     verify(usersService).findAll();
   }
+
+  @Test
+  @WithMockJWT(authorities = "SCOPE_read:users", emailAddress = "david.johnston@example.com")
+  void get_tokenWithReadUsersScope_invokesFindScopedUsersService() throws Exception {
+    mockMvc.perform(get("/users"));
+
+    verify(usersService).findScopedUsers("david.johnston@example.com");
+  }
 }

@@ -1,5 +1,6 @@
 package uk.co.dajohnston.houseworkapi.users;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
@@ -19,5 +20,9 @@ public class UsersService {
   public List<User> findAll() {
     return stream(usersRepository.findAll()
                                  .spliterator(), false).toList();
+  }
+
+  public List<User> findScopedUsers(String emailAddress) {
+    return singletonList(usersRepository.findByEmailAddress(emailAddress));
   }
 }
