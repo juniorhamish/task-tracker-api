@@ -31,7 +31,7 @@ class UsersTest {
   }
 
   @Test
-  @WithMockJWT
+  @WithMockJWT(authorities = "SCOPE_write:users")
   void post_users_createsUser() throws Exception {
     mockMvc.perform(post("/users").content("""
                                       {

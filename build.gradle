@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'java-test-fixtures'
     id 'jacoco'
     id 'org.springframework.boot' version '3.2.2'
     id 'io.spring.dependency-management' version '1.1.4'
@@ -15,7 +16,7 @@ java {
 }
 
 tasks.named("jar") {
-    enabled = false
+    enabled = true
 }
 
 sourceSets {
@@ -56,6 +57,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation "org.mockito:mockito-core:5.9.0"
     testImplementation "org.mockito:mockito-junit-jupiter:5.9.0"
+    testFixturesImplementation 'org.springframework.security:spring-security-test'
+    testFixturesImplementation 'org.springframework.security:spring-security-oauth2-resource-server'
+    testFixturesImplementation 'org.springframework.security:spring-security-oauth2-jose'
 }
 
 tasks.named('test') {
