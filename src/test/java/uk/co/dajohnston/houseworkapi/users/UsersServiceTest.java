@@ -56,4 +56,14 @@ class UsersServiceTest {
     assertThat(users, contains(new User("David", "Johnston", "david.johnston@example.com"),
         new User("Bobby", "Davro", "bobby.davro@example.com")));
   }
+
+  @Test
+  void findAllScopedUsers_returnsUserWithEmailAddressFromRepository() {
+    when(usersRepository.findByEmailAddress(any())).thenReturn(
+        new User("David", "Johnston", "david.johnston@example.com"));
+
+    List<User> users = usersService.findScopedUsers("david.johnston@example.com");
+
+    assertThat(users, contains(new User("David", "Johnston", "david.johnston@example.com")));
+  }
 }

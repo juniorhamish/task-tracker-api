@@ -16,6 +16,7 @@ public class WithMockJWTSecurityContextFactory implements WithSecurityContextFac
     var jwt = Jwt.withTokenValue("token")
                  .header("alg", "none")
                  .claim("sub", "user")
+                 .claim("https://housework-api.onrender.com/email", annotation.emailAddress())
                  .build();
 
     var token = new JwtAuthenticationToken(jwt, Arrays.stream(annotation.authorities())

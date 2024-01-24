@@ -9,4 +9,5 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 public @interface WithMockJWT {
 
   String[] authorities() default {};
+  String emailAddress() default "";
 }
