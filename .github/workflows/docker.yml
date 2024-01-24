@@ -14,16 +14,24 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
-    - name: Get branch name
+    - name: Branch name with no slashes
       uses: mad9000/actions-find-and-replace-string@4
-      id: CleanBranchName
+      id: BranchNameNoSlashes
       with:
         source: ${{ github.head_ref || github.ref_name }}
         find: '/'
         replace: ''
         replaceAll: 'true'
+    - name: Branch name with no dots
+      uses: mad9000/actions-find-and-replace-string@4
+      id: BranchNameNoDots
+      with:
+        source: ${{ steps.BranchNameNoSlashes.outputs.value }}
+        find: '.'
+        replace: ''
+        replaceAll: 'true'
     - name: Print branch name
-      run: echo "The safe branch name is ${{ steps.CleanBranchName.outputs.value }}"
+      run: echo "The safe branch name is ${{ steps.BranchNameNoDots.outputs.value }}"
     - name: Checkout
       uses: actions/checkout@v4
       with:
