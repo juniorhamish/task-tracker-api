@@ -19,7 +19,7 @@ jobs:
       id: CleanBranchName
       with:
         source: ${{ github.head_ref || github.ref_name }}
-        find: /[/.-]/g
+        find: '/'
         replace: ''
         replaceAll: 'true'
     - name: Print branch name
