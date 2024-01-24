@@ -25,7 +25,7 @@ public class UsersController {
   }
 
   @GetMapping("/users")
-  @PreAuthorize("hasAuthority('SCOPE_read:users')")
+  @PreAuthorize("hasAnyAuthority('SCOPE_read:users', 'SCOPE_read:allusers')")
   public List<User> findAll() {
     return usersService.findAll();
   }
