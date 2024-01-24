@@ -19,7 +19,7 @@ public class UsersController {
 
   @PostMapping("/users")
   @ResponseStatus(CREATED)
-  @PreAuthorize("hasAuthority('SCOPE_write:users')")
+  @PreAuthorize("hasAuthority('SCOPE_create:users')")
   public User create(@RequestBody User user) {
     return usersService.create(user);
   }

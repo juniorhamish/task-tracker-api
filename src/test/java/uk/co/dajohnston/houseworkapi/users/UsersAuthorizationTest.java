@@ -54,7 +54,7 @@ class UsersAuthorizationTest {
   }
 
   @Test
-  @WithMockJWT(authorities = "SCOPE_write:users")
+  @WithMockJWT(authorities = "SCOPE_create:users")
   void post_tokenWithWriteUsersScope_returns201Response() throws Exception {
     mockMvc.perform(post("/users").with(csrf())
                                   .content("""
@@ -69,7 +69,7 @@ class UsersAuthorizationTest {
   }
 
   @Test
-  @WithMockJWT(authorities = "SCOPE_write:users")
+  @WithMockJWT(authorities = "SCOPE_create:users")
   void post_requestWithoutCsrfToken_returns403Response() throws Exception {
     mockMvc.perform(post("/users").content("""
                                       {
