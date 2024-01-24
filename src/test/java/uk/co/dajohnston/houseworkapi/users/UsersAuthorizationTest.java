@@ -16,7 +16,7 @@ import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 
 @WebMvcTest(UsersController.class)
 @Import(SecurityConfig.class)
-public class UsersAuthorizationTest {
+class UsersAuthorizationTest {
 
   @Autowired
   private MockMvc mockMvc;
