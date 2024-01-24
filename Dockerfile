@@ -1,11 +1,14 @@
 # syntax=docker/dockerfile:experimental
 FROM amazoncorretto:21-alpine-jdk AS build
+RUN apk upgrade --update-cache --no-cache && apk add dos2unix
 WORKDIR /workspace/app
 COPY . /workspace/app
+RUN dos2unix ./gradlew
+RUN sed -i 's/all.zip/bin.zip/g' ./gradle/wrapper/gradle-wrapper.properties
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew --no-daemon \
     clean build -x test -x integrationTest
-RUN mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
+RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build AS test
 RUN --mount=type=cache,target=/root/.gradle \

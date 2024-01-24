@@ -15,10 +15,6 @@ java {
     sourceCompatibility = '21'
 }
 
-tasks.named("jar") {
-    enabled = true
-}
-
 sourceSets {
     integrationTest {
         compileClasspath += sourceSets.main.output
