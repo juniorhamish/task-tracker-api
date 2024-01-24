@@ -112,7 +112,7 @@ class UsersAuthorizationTest {
 
   @Test
   @WithMockJWT(authorities = "SCOPE_read:allusers")
-  void get_tokenWithReadUsersScope_invokesFindAllUsersService() throws Exception {
+  void get_tokenWithReadAllUsersScope_invokesFindAllUsersService() throws Exception {
     mockMvc.perform(get("/users"));
 
     verify(usersService).findAll();
