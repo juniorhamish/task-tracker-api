@@ -30,6 +30,13 @@ jobs:
         find: '.'
         replace: ''
         replaceAll: 'true'
+    - name: Shortened branch name
+      uses: mad9000/actions-find-and-replace-string@4
+      id: ShortBranchName
+      with:
+        source: ${{ steps.BranchNameNoDots.outputs.value }}
+        find: 'dependabotgradle'
+        replace: ''
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -84,7 +91,7 @@ jobs:
         load: true
         secrets: |
           "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
-          "SPRING_DATA_MONGODB_DATABASE=housework_api_IT_${{ steps.BranchNameNoDots.outputs.value }}"
+          "SPRING_DATA_MONGODB_DATABASE=IT_${{ steps.ShortBranchName.outputs.value }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Integration Test Reports
