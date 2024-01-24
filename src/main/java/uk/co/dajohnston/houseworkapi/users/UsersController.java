@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +30,24 @@ public class UsersController {
   @GetMapping("/users")
   @PreAuthorize("hasAnyAuthority('SCOPE_read:users', 'SCOPE_read:allusers')")
   public List<User> findAll(Authentication authentication) {
-    if (authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList().contains("SCOPE_read:allusers")) {
-      return usersService.findAll();
+    List<User> users;
+    if (hasAllUsersScope(authentication)) {
+      users = usersService.findAll();
+    } else {
+      users = usersService.findScopedUsers(emailAddress(authentication));
     }
-    return usersService.findAll();
+    return users;
+  }
+
+  private static String emailAddress(Authentication authentication) {
+    return ((Jwt) authentication.getPrincipal()).getClaim(
+        "https://housework-api.onrender.com/email");
+  }
+
+  private static boolean hasAllUsersScope(Authentication authentication) {
+    return authentication.getAuthorities()
+                         .stream()
+                         .map(GrantedAuthority::getAuthority)
+                         .anyMatch("SCOPE_read:allusers"::equals);
   }
 }

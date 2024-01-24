@@ -1,6 +1,5 @@
 package uk.co.dajohnston.houseworkapi.users;
 
-import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -108,21 +107,5 @@ class UsersAuthorizationTest {
   void get_tokenWithReadAllUsersScope_returns200Response() throws Exception {
     mockMvc.perform(get("/users"))
            .andExpect(status().isOk());
-  }
-
-  @Test
-  @WithMockJWT(authorities = "SCOPE_read:allusers")
-  void get_tokenWithReadAllUsersScope_invokesFindAllUsersService() throws Exception {
-    mockMvc.perform(get("/users"));
-
-    verify(usersService).findAll();
-  }
-
-  @Test
-  @WithMockJWT(authorities = "SCOPE_read:users", emailAddress = "david.johnston@example.com")
-  void get_tokenWithReadUsersScope_invokesFindScopedUsersService() throws Exception {
-    mockMvc.perform(get("/users"));
-
-    verify(usersService).findScopedUsers("david.johnston@example.com");
   }
 }

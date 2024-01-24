@@ -1,24 +1,26 @@
 package uk.co.dajohnston.houseworkapi.users;
 
-import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 
 @WebMvcTest(UsersController.class)
-@AutoConfigureMockMvc(addFilters = false)
+@AutoConfigureMockMvc
+@WithMockJWT
 class UsersControllerTest {
 
   @Autowired
@@ -32,7 +34,8 @@ class UsersControllerTest {
     when(usersService.create(any())).thenReturn(
         new User("First", "Last", "first.last@example.com"));
 
-    mockMvc.perform(post("/users").content("""
+    mockMvc.perform(post("/users").with(csrf())
+                                  .content("""
                                       {
                                         "firstName": "David",
                                         "lastName": "Johnston",
@@ -49,23 +52,10 @@ class UsersControllerTest {
                """, true));
   }
 
-
-  @Test
-  void post_returns201StatusCode() throws Exception {
-    mockMvc.perform(post("/users").content("""
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
-                                  .contentType(APPLICATION_JSON))
-           .andExpect(status().isCreated());
-  }
-
   @Test
   void post_usesServiceToCreateUser() throws Exception {
-    mockMvc.perform(post("/users").content("""
+    mockMvc.perform(post("/users").with(csrf())
+                                  .content("""
                                       {
                                         "firstName": "David",
                                         "lastName": "Johnston",
@@ -78,9 +68,42 @@ class UsersControllerTest {
   }
 
   @Test
-  void get_returnsAllUsers() throws Exception {
+  @WithMockJWT(authorities = {"SCOPE_read:allusers"})
+  void get_userHasReadAllUsersScope_returnsAllUsers() throws Exception {
     when(usersService.findAll()).thenReturn(
-        singletonList(new User("David", "Johnston", "david.johnston@example.com")));
+        List.of(new User("David", "Johnston", "david.johnston@example.com"),
+            new User("Bobby", "Davro", "bobby.davro@example.com")));
+
+    mockMvc.perform(get("/users"))
+           .andExpect(content().json("""
+               [
+                 {
+                   "firstName": "David",
+                   "lastName": "Johnston",
+                   "emailAddress": "david.johnston@example.com"
+                 },
+                 {
+                   "firstName": "Bobby",
+                   "lastName": "Davro",
+                   "emailAddress": "bobby.davro@example.com"
+                 }
+               ]
+               """));
+  }
+
+  @Test
+  @WithMockJWT(authorities = {"SCOPE_read:allusers"})
+  void get_userHasReadAllUsersScope_findsAllUsersFromService() throws Exception {
+    mockMvc.perform(get("/users"));
+
+    verify(usersService).findAll();
+  }
+
+  @Test
+  @WithMockJWT(authorities = {"SCOPE_read:users"})
+  void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
+    when(usersService.findScopedUsers(any())).thenReturn(
+        List.of(new User("David", "Johnston", "david.johnston@example.com")));
 
     mockMvc.perform(get("/users"))
            .andExpect(content().json("""
@@ -92,5 +115,13 @@ class UsersControllerTest {
                  }
                ]
                """));
+  }
+
+  @Test
+  @WithMockJWT(authorities = {"SCOPE_read:users"}, emailAddress = "david.johnston@example.com")
+  void get_userHasReadUsersScope_findsScopedUsersFromServiceByEmailAddress() throws Exception {
+    mockMvc.perform(get("/users"));
+
+    verify(usersService).findScopedUsers("david.johnston@example.com");
   }
 }
