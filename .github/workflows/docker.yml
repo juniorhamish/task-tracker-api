@@ -14,6 +14,29 @@ jobs:
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
+    - name: Branch name with no slashes
+      uses: mad9000/actions-find-and-replace-string@4
+      id: BranchNameNoSlashes
+      with:
+        source: ${{ github.head_ref || github.ref_name }}
+        find: '/'
+        replace: ''
+        replaceAll: 'true'
+    - name: Branch name with no dots
+      uses: mad9000/actions-find-and-replace-string@4
+      id: BranchNameNoDots
+      with:
+        source: ${{ steps.BranchNameNoSlashes.outputs.value }}
+        find: '.'
+        replace: ''
+        replaceAll: 'true'
+    - name: Shortened branch name
+      uses: mad9000/actions-find-and-replace-string@4
+      id: ShortBranchName
+      with:
+        source: ${{ steps.BranchNameNoDots.outputs.value }}
+        find: 'dependabotgradle'
+        replace: ''
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -68,7 +91,7 @@ jobs:
         load: true
         secrets: |
           "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
-          "SPRING_DATA_MONGODB_DATABASE=housework_api_IT_${{ github.head_ref || github.ref_name }}"
+          "SPRING_DATA_MONGODB_DATABASE=IT_${{ steps.ShortBranchName.outputs.value }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Integration Test Reports
