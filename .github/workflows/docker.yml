@@ -30,8 +30,6 @@ jobs:
         find: '.'
         replace: ''
         replaceAll: 'true'
-    - name: Print branch name
-      run: echo "The safe branch name is ${{ steps.BranchNameNoDots.outputs.value }}"
     - name: Checkout
       uses: actions/checkout@v4
       with:
@@ -86,7 +84,7 @@ jobs:
         load: true
         secrets: |
           "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
-          "SPRING_DATA_MONGODB_DATABASE=housework_api_IT_${{ steps.CleanBranchName.outputs.value }}"
+          "SPRING_DATA_MONGODB_DATABASE=housework_api_IT_${{ steps.BranchNameNoDots.outputs.value }}"
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Integration Test Reports
