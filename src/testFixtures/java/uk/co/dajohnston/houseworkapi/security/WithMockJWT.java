@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 @WithSecurityContext(factory = WithMockJWTSecurityContextFactory.class)
 public @interface WithMockJWT {
 
-  String[] authorities() default {};
+  String scope() default "";
   String emailAddress() default "";
+  String[] roles() default {};
 }

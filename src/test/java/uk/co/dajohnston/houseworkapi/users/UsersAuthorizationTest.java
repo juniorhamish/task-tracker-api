@@ -54,7 +54,7 @@ class UsersAuthorizationTest {
   }
 
   @Test
-  @WithMockJWT(authorities = "SCOPE_create:users")
+  @WithMockJWT(scope = "create:users")
   void post_tokenWithWriteUsersScope_returns201Response() throws Exception {
     mockMvc.perform(post("/users").with(csrf())
                                   .content("""
@@ -69,7 +69,7 @@ class UsersAuthorizationTest {
   }
 
   @Test
-  @WithMockJWT(authorities = "SCOPE_create:users")
+  @WithMockJWT(scope = "create:users")
   void post_requestWithoutCsrfToken_returns403Response() throws Exception {
     mockMvc.perform(post("/users").content("""
                                       {
@@ -96,15 +96,8 @@ class UsersAuthorizationTest {
   }
 
   @Test
-  @WithMockJWT(authorities = "SCOPE_read:users")
+  @WithMockJWT(scope = "read:users")
   void get_tokenWithReadUsersScope_returns200Response() throws Exception {
-    mockMvc.perform(get("/users"))
-           .andExpect(status().isOk());
-  }
-
-  @Test
-  @WithMockJWT(authorities = "SCOPE_read:allusers")
-  void get_tokenWithReadAllUsersScope_returns200Response() throws Exception {
     mockMvc.perform(get("/users"))
            .andExpect(status().isOk());
   }

@@ -28,7 +28,8 @@ public class SecurityConfig {
     return http.build();
   }
 
-  private static JwtAuthenticationConverter jwtAuthenticationConverter() {
+  @Bean
+  public JwtAuthenticationConverter jwtAuthenticationConverter() {
     var originalConverter = new JwtGrantedAuthoritiesConverter();
     var jwtAuthenticationConverter = new JwtAuthenticationConverter();
     jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter((Jwt jwt) -> {

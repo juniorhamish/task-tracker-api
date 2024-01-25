@@ -4,29 +4,33 @@ import static org.springframework.security.core.context.SecurityContextHolder.cr
 
 import java.util.Arrays;
 import java.util.Map;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.test.context.support.WithSecurityContextFactory;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class WithMockJWTSecurityContextFactory implements WithSecurityContextFactory<WithMockJWT> {
+
+  private final JwtAuthenticationConverter jwtAuthenticationConverter;
 
   @Override
   public SecurityContext createSecurityContext(WithMockJWT annotation) {
     var jwt = Jwt.withTokenValue("token")
                  .header("alg", "none")
                  .claim("sub", "user")
+                 .claim("scope", annotation.scope())
                  .claim("https://housework-api.onrender.com/user",
                      Map.of("email", annotation.emailAddress()))
+                 .claim("https://housework-api.onrender.com/roles",
+                     Arrays.asList(annotation.roles()))
                  .build();
 
-    var token = new JwtAuthenticationToken(jwt, Arrays.stream(annotation.authorities())
-                                                      .map(SimpleGrantedAuthority::new)
-                                                      .toList());
-
     SecurityContext context = createEmptyContext();
-    context.setAuthentication(token);
+    context.setAuthentication(jwtAuthenticationConverter.convert(jwt));
     return context;
   }
 }
