@@ -29,10 +29,10 @@ public class UsersController {
   }
 
   @GetMapping("/users")
-  @PreAuthorize("hasAnyAuthority('SCOPE_read:users', 'SCOPE_read:allusers')")
+  @PreAuthorize("hasAuthority('SCOPE_read:users')")
   public List<User> findAll(JwtAuthenticationToken authentication) {
     List<User> users;
-    if (hasAllUsersScope(authentication)) {
+    if (hasAdminRole(authentication)) {
       users = usersService.findAll();
     } else {
       users = usersService.findScopedUsers(emailAddress(authentication));
@@ -44,17 +44,13 @@ public class UsersController {
     Map<String, Object> userDetails = authentication.getToken()
                                                     .getClaimAsMap(
                                                         "https://housework-api.onrender.com/user");
-    String emailAddress = null;
-    if (userDetails != null) {
-      emailAddress = (String) userDetails.get("email");
-    }
-    return emailAddress;
+    return (String) userDetails.get("email");
   }
 
-  private static boolean hasAllUsersScope(Authentication authentication) {
+  private static boolean hasAdminRole(Authentication authentication) {
     return authentication.getAuthorities()
                          .stream()
                          .map(GrantedAuthority::getAuthority)
-                         .anyMatch("SCOPE_read:allusers"::equals);
+                         .anyMatch("ROLE_Admin"::equals);
   }
 }

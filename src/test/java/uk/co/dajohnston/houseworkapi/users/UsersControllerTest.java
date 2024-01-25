@@ -23,7 +23,7 @@ import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 @WebMvcTest(UsersController.class)
 @AutoConfigureMockMvc
 @Import(SecurityConfig.class)
-@WithMockJWT(authorities = {"SCOPE_read:users", "SCOPE_create:users"})
+@WithMockJWT(scope = "read:users create:users")
 class UsersControllerTest {
 
   @Autowired
@@ -71,8 +71,8 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(authorities = {"SCOPE_read:allusers"})
-  void get_userHasReadAllUsersScope_returnsAllUsers() throws Exception {
+  @WithMockJWT(scope = "read:users", roles = {"Admin"})
+  void get_userHasReadUsersScopeAndAdminRole_returnsAllUsers() throws Exception {
     when(usersService.findAll()).thenReturn(
         List.of(new User("David", "Johnston", "david.johnston@example.com"),
             new User("Bobby", "Davro", "bobby.davro@example.com")));
@@ -95,15 +95,15 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(authorities = {"SCOPE_read:allusers"})
-  void get_userHasReadAllUsersScope_findsAllUsersFromService() throws Exception {
+  @WithMockJWT(scope = "read:users", roles = {"Admin"})
+  void get_userHasReadUsersScopeAndAdminRole_findsAllUsersFromService() throws Exception {
     mockMvc.perform(get("/users"));
 
     verify(usersService).findAll();
   }
 
   @Test
-  @WithMockJWT(authorities = {"SCOPE_read:users"})
+  @WithMockJWT(scope = "read:users")
   void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
     when(usersService.findScopedUsers(any())).thenReturn(
         List.of(new User("David", "Johnston", "david.johnston@example.com")));
@@ -121,7 +121,7 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(authorities = {"SCOPE_read:users"}, emailAddress = "david.johnston@example.com")
+  @WithMockJWT(scope = "read:users", emailAddress = "david.johnston@example.com")
   void get_userHasReadUsersScope_findsScopedUsersFromServiceByEmailAddress() throws Exception {
     mockMvc.perform(get("/users"));
 
