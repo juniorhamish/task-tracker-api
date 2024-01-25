@@ -44,11 +44,7 @@ public class UsersController {
     Map<String, Object> userDetails = authentication.getToken()
                                                     .getClaimAsMap(
                                                         "https://housework-api.onrender.com/user");
-    String emailAddress = null;
-    if (userDetails != null) {
-      emailAddress = (String) userDetails.get("email");
-    }
-    return emailAddress;
+    return (String) userDetails.get("email");
   }
 
   private static boolean hasAdminRole(Authentication authentication) {
