@@ -3,6 +3,7 @@ package uk.co.dajohnston.houseworkapi.security;
 import static org.springframework.security.core.context.SecurityContextHolder.createEmptyContext;
 
 import java.util.Arrays;
+import java.util.Map;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -16,7 +17,8 @@ public class WithMockJWTSecurityContextFactory implements WithSecurityContextFac
     var jwt = Jwt.withTokenValue("token")
                  .header("alg", "none")
                  .claim("sub", "user")
-                 .claim("https://housework-api.onrender.com/email", annotation.emailAddress())
+                 .claim("https://housework-api.onrender.com/user",
+                     Map.of("email", annotation.emailAddress()))
                  .build();
 
     var token = new JwtAuthenticationToken(jwt, Arrays.stream(annotation.authorities())

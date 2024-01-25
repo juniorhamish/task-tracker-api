@@ -3,11 +3,12 @@ package uk.co.dajohnston.houseworkapi.users;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +30,7 @@ public class UsersController {
 
   @GetMapping("/users")
   @PreAuthorize("hasAnyAuthority('SCOPE_read:users', 'SCOPE_read:allusers')")
-  public List<User> findAll(Authentication authentication) {
+  public List<User> findAll(JwtAuthenticationToken authentication) {
     List<User> users;
     if (hasAllUsersScope(authentication)) {
       users = usersService.findAll();
@@ -39,9 +40,15 @@ public class UsersController {
     return users;
   }
 
-  private static String emailAddress(Authentication authentication) {
-    return ((Jwt) authentication.getPrincipal()).getClaim(
-        "https://housework-api.onrender.com/email");
+  private static String emailAddress(JwtAuthenticationToken authentication) {
+    Map<String, Object> userDetails = authentication.getToken()
+                                                    .getClaimAsMap(
+                                                        "https://housework-api.onrender.com/user");
+    String emailAddress = null;
+    if (userDetails != null) {
+      emailAddress = (String) userDetails.get("email");
+    }
+    return emailAddress;
   }
 
   private static boolean hasAllUsersScope(Authentication authentication) {
