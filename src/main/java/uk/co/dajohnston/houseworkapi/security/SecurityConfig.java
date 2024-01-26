@@ -1,6 +1,7 @@
 package uk.co.dajohnston.houseworkapi.security;
 
 import java.util.Collection;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -16,6 +17,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+  @Value("${jwt.claims.namespace}")
+  private String customClaimNamespace;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -35,7 +39,7 @@ public class SecurityConfig {
     jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter((Jwt jwt) -> {
       Collection<GrantedAuthority> result = originalConverter.convert(jwt);
       var rolesConverter = new JwtGrantedAuthoritiesConverter();
-      rolesConverter.setAuthoritiesClaimName("https://housework-api.onrender.com/roles");
+      rolesConverter.setAuthoritiesClaimName(customClaimNamespace + "/roles");
       rolesConverter.setAuthorityPrefix("ROLE_");
       result.addAll(rolesConverter.convert(jwt));
       return result;

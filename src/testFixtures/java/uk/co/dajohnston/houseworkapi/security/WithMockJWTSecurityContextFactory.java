@@ -5,6 +5,7 @@ import static org.springframework.security.core.context.SecurityContextHolder.cr
 import java.util.Arrays;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Component;
 public class WithMockJWTSecurityContextFactory implements WithSecurityContextFactory<WithMockJWT> {
 
   private final JwtAuthenticationConverter jwtAuthenticationConverter;
+  @Value("${jwt.claims.namespace}")
+  private String customClaimNamespace;
 
   @Override
   public SecurityContext createSecurityContext(WithMockJWT annotation) {
@@ -23,10 +26,8 @@ public class WithMockJWTSecurityContextFactory implements WithSecurityContextFac
                  .header("alg", "none")
                  .claim("sub", "user")
                  .claim("scope", annotation.scope())
-                 .claim("https://housework-api.onrender.com/user",
-                     Map.of("email", annotation.emailAddress()))
-                 .claim("https://housework-api.onrender.com/roles",
-                     Arrays.asList(annotation.roles()))
+                 .claim(customClaimNamespace + "/user", Map.of("email", annotation.emailAddress()))
+                 .claim(customClaimNamespace + "/roles", Arrays.asList(annotation.roles()))
                  .build();
 
     SecurityContext context = createEmptyContext();

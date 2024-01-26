@@ -8,3 +8,6 @@ spring:
         jwt:
           audiences: https://housework-api.onrender.com
           issuer-uri: https://dajohnston.eu.auth0.com/
+jwt:
+  claims:
+    namespace: https://housework-api.onrender.com
