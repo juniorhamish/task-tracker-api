@@ -1,6 +1,7 @@
 package uk.co.dajohnston.houseworkapi.security;
 
 import java.util.Collection;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +17,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
   @Value("${jwt.claims.namespace}")
-  private String customClaimNamespace;
+  private final String customClaimNamespace;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

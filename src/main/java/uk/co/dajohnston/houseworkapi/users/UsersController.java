@@ -22,7 +22,7 @@ public class UsersController {
 
   private final UsersService usersService;
   @Value("${jwt.claims.namespace}")
-  private String customClaimNamespace;
+  private final String customClaimNamespace;
 
   @PostMapping("/users")
   @ResponseStatus(CREATED)

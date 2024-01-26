@@ -18,7 +18,7 @@ public class WithMockJWTSecurityContextFactory implements WithSecurityContextFac
 
   private final JwtAuthenticationConverter jwtAuthenticationConverter;
   @Value("${jwt.claims.namespace}")
-  private String customClaimNamespace;
+  private final String customClaimNamespace;
 
   @Override
   public SecurityContext createSecurityContext(WithMockJWT annotation) {
