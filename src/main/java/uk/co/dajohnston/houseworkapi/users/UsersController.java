@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
 
   private final UsersService usersService;
+  @Value("${jwt.claims.namespace}")
+  private final String customClaimNamespace;
 
   @PostMapping("/users")
   @ResponseStatus(CREATED)
@@ -40,10 +43,9 @@ public class UsersController {
     return users;
   }
 
-  private static String emailAddress(JwtAuthenticationToken authentication) {
+  private String emailAddress(JwtAuthenticationToken authentication) {
     Map<String, Object> userDetails = authentication.getToken()
-                                                    .getClaimAsMap(
-                                                        "https://housework-api.onrender.com/user");
+                                                    .getClaimAsMap(customClaimNamespace + "/user");
     return (String) userDetails.get("email");
   }
 
