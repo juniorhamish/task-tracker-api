@@ -13,18 +13,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @ExtendWith(MockitoExtension.class)
+@SpringJUnitConfig({UsersService.class, LocalValidatorFactoryBean.class})
 class UsersServiceTest {
 
-  @Mock
+  @MockBean
   private UsersRepository usersRepository;
+  @Autowired
   private UsersService usersService;
-
-  @BeforeEach
-  void setUp() {
-    usersService = new UsersService(usersRepository);
-  }
 
   @Test
   void create_savesUserToRepository() {
@@ -43,6 +44,11 @@ class UsersServiceTest {
     User result = usersService.create(new User(null, null, null));
 
     assertThat(result, is(user));
+  }
+
+  @Test
+  void create_emailAddressNull_throwsSomething() {
+    usersService.create(new User("David", "Johnston", null));
   }
 
   @Test
