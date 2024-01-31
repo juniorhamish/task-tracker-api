@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+  <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+  <appender name="Logtail" class="com.logtail.logback.LogtailAppender">
+    <appName>Housework API ${RENDER_GIT_BRANCH:-}</appName>
+    <sourceToken>${BETTER_STACK_TOKEN}</sourceToken>
+    <mdcFields>requestId,requestTime,traceId,spanId</mdcFields>
+    <mdcTypes>string,int,string,string</mdcTypes>
+    <objectMapperModule>com.fasterxml.jackson.datatype.jsr310.JavaTimeModule</objectMapperModule>
+  </appender>
+  <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <charset>utf8</charset>
+    </encoder>
+  </appender>
+  <root level="INFO">
+    <appender-ref ref="Logtail" />
+    <appender-ref ref="Console" />
+  </root>
+</configuration>
