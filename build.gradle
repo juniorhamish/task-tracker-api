@@ -8,6 +8,12 @@ plugins {
     id 'idea'
 }
 
+dependencyManagement {
+    imports {
+        mavenBom "com.wavefront:wavefront-spring-boot-bom:3.2.0"
+    }
+}
+
 group = 'uk.co.dajohnston'
 version = '0.0.2'
 
@@ -51,6 +57,8 @@ dependencies {
     implementation 'io.micrometer:micrometer-tracing'
     implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'com.logtail:logback-logtail:0.3.3'
+    runtimeOnly 'com.wavefront:wavefront-spring-boot-starter'
+    runtimeOnly 'io.micrometer:micrometer-tracing-reporter-wavefront'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
