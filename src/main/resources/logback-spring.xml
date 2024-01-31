@@ -3,7 +3,7 @@
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <appender name="Logtail" class="com.logtail.logback.LogtailAppender">
     <appName>Housework API</appName>
-    <sourceToken>JF6JiCiB1UC2Q5zHwgPKTh8m</sourceToken>
+    <sourceToken>${BETTER_STACK_TOKEN}</sourceToken>
     <mdcFields>requestId,requestTime,traceId,spanId</mdcFields>
     <mdcTypes>string,int,string,string</mdcTypes>
     <objectMapperModule>com.fasterxml.jackson.datatype.jsr310.JavaTimeModule</objectMapperModule>
