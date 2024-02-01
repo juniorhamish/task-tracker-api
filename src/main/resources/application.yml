@@ -11,3 +11,10 @@ spring:
 jwt:
   claims:
     namespace: https://housework-api.onrender.com
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health", "info", "metrics"]
+  wavefront:
+    uri: https://wavefront.surf
