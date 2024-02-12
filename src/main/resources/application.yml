@@ -15,6 +15,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: ["health", "info", "metrics"]
-  wavefront:
-    uri: https://wavefront.surf
+        include: ["health", "info", "metrics", "prometheus"]
