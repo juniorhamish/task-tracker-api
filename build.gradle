@@ -8,12 +8,6 @@ plugins {
     id 'idea'
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "com.wavefront:wavefront-spring-boot-bom:3.2.0"
-    }
-}
-
 group = 'uk.co.dajohnston'
 version = '0.0.2'
 
@@ -54,11 +48,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.security:spring-security-oauth2-resource-server'
     implementation 'org.springframework.security:spring-security-oauth2-jose'
-    implementation 'io.micrometer:micrometer-tracing'
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
     implementation 'com.logtail:logback-logtail:0.3.3'
-    runtimeOnly 'com.wavefront:wavefront-spring-boot-starter'
-    runtimeOnly 'io.micrometer:micrometer-tracing-reporter-wavefront'
+    implementation 'com.grafana:grafana-opentelemetry-starter:1.4.0'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
