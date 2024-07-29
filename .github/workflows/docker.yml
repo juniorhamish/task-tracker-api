@@ -52,7 +52,7 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Build
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: build
@@ -60,7 +60,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Unit Test
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: test
@@ -68,7 +68,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Unit Test Reports
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: unit-test-results
@@ -84,7 +84,7 @@ jobs:
         reporter: java-junit
         fail-on-error: true
     - name: Integration Test
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: integration-test
@@ -95,7 +95,7 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
     - name: Export Integration Test Reports
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: integration-test-results
@@ -112,7 +112,7 @@ jobs:
         fail-on-error: true
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: sonar
@@ -123,7 +123,7 @@ jobs:
         cache-to: type=gha,mode=max
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         target: sonar-pr
@@ -144,7 +144,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASS }}
     - name: Build Docker image
       if: ${{ github.ref == 'refs/heads/main' }}
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         push: true
