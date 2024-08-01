@@ -17,18 +17,20 @@ import org.springframework.stereotype.Component;
 public class WithMockJWTSecurityContextFactory implements WithSecurityContextFactory<WithMockJWT> {
 
   private final JwtAuthenticationConverter jwtAuthenticationConverter;
+
   @Value("${jwt.claims.namespace}")
   private final String customClaimNamespace;
 
   @Override
   public SecurityContext createSecurityContext(WithMockJWT annotation) {
-    var jwt = Jwt.withTokenValue("token")
-                 .header("alg", "none")
-                 .claim("sub", "user")
-                 .claim("scope", annotation.scope())
-                 .claim(customClaimNamespace + "/user", Map.of("email", annotation.emailAddress()))
-                 .claim(customClaimNamespace + "/roles", Arrays.asList(annotation.roles()))
-                 .build();
+    var jwt =
+        Jwt.withTokenValue("token")
+            .header("alg", "none")
+            .claim("sub", "user")
+            .claim("scope", annotation.scope())
+            .claim(customClaimNamespace + "/user", Map.of("email", annotation.emailAddress()))
+            .claim(customClaimNamespace + "/roles", Arrays.asList(annotation.roles()))
+            .build();
 
     SecurityContext context = createEmptyContext();
     context.setAuthentication(jwtAuthenticationConverter.convert(jwt));

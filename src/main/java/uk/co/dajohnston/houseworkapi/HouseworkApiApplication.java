@@ -11,5 +11,4 @@ public class HouseworkApiApplication {
   public static void main(String[] args) {
     SpringApplication.run(HouseworkApiApplication.class, args);
   }
-
 }

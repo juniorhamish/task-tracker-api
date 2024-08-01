@@ -7,8 +7,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class JwtProperties {
 
-  /**
-   * The namespace that is used for custom claims, e.g. roles and user information.
-   */
+  /** The namespace that is used for custom claims, e.g. roles and user information. */
   private String namespace;
 }
