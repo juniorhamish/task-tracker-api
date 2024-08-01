@@ -26,59 +26,76 @@ import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 @WithMockJWT(scope = "read:users create:users")
 class UsersControllerTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
-  @MockBean
-  private UsersService usersService;
+  @MockBean private UsersService usersService;
 
   @Test
   void post_returnsCreatedUser() throws Exception {
-    when(usersService.create(any())).thenReturn(
-        new User("First", "Last", "first.last@example.com"));
+    when(usersService.create(any()))
+        .thenReturn(new User("First", "Last", "first.last@example.com"));
 
-    mockMvc.perform(post("/users").with(csrf())
-                                  .content("""
+    mockMvc
+        .perform(
+            post("/users")
+                .with(csrf())
+                .content(
+                    """
                                       {
                                         "firstName": "David",
                                         "lastName": "Johnston",
                                         "emailAddress": "david.johnston@example.com"
                                       }
                                       """)
-                                  .contentType(APPLICATION_JSON))
-           .andExpect(content().json("""
+                .contentType(APPLICATION_JSON))
+        .andExpect(
+            content()
+                .json(
+                    """
                {
                  "firstName": "First",
                  "lastName": "Last",
                  "emailAddress": "first.last@example.com"
                }
-               """, true));
+               """,
+                    true));
   }
 
   @Test
   void post_usesServiceToCreateUser() throws Exception {
-    mockMvc.perform(post("/users").with(csrf())
-                                  .content("""
+    mockMvc.perform(
+        post("/users")
+            .with(csrf())
+            .content(
+                """
                                       {
                                         "firstName": "David",
                                         "lastName": "Johnston",
                                         "emailAddress": "david.johnston@example.com"
                                       }
                                       """)
-                                  .contentType(APPLICATION_JSON));
+            .contentType(APPLICATION_JSON));
 
     verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
   }
 
   @Test
-  @WithMockJWT(scope = "read:users", roles = {"Admin"})
+  @WithMockJWT(
+      scope = "read:users",
+      roles = {"Admin"})
   void get_userHasReadUsersScopeAndAdminRole_returnsAllUsers() throws Exception {
-    when(usersService.findAll()).thenReturn(
-        List.of(new User("David", "Johnston", "david.johnston@example.com"),
-            new User("Bobby", "Davro", "bobby.davro@example.com")));
+    when(usersService.findAll())
+        .thenReturn(
+            List.of(
+                new User("David", "Johnston", "david.johnston@example.com"),
+                new User("Bobby", "Davro", "bobby.davro@example.com")));
 
-    mockMvc.perform(get("/users"))
-           .andExpect(content().json("""
+    mockMvc
+        .perform(get("/users"))
+        .andExpect(
+            content()
+                .json(
+                    """
                [
                  {
                    "firstName": "David",
@@ -95,7 +112,9 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(scope = "read:users", roles = {"Admin"})
+  @WithMockJWT(
+      scope = "read:users",
+      roles = {"Admin"})
   void get_userHasReadUsersScopeAndAdminRole_findsAllUsersFromService() throws Exception {
     mockMvc.perform(get("/users"));
 
@@ -105,11 +124,15 @@ class UsersControllerTest {
   @Test
   @WithMockJWT(scope = "read:users")
   void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
-    when(usersService.findScopedUsers(any())).thenReturn(
-        List.of(new User("David", "Johnston", "david.johnston@example.com")));
+    when(usersService.findScopedUsers(any()))
+        .thenReturn(List.of(new User("David", "Johnston", "david.johnston@example.com")));
 
-    mockMvc.perform(get("/users"))
-           .andExpect(content().json("""
+    mockMvc
+        .perform(get("/users"))
+        .andExpect(
+            content()
+                .json(
+                    """
                [
                  {
                    "firstName": "David",

@@ -18,8 +18,7 @@ public class UsersService {
   }
 
   public List<User> findAll() {
-    return stream(usersRepository.findAll()
-                                 .spliterator(), false).toList();
+    return stream(usersRepository.findAll().spliterator(), false).toList();
   }
 
   public List<User> findScopedUsers(String emailAddress) {

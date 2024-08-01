@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UsersController {
 
   private final UsersService usersService;
+
   @Value("${jwt.claims.namespace}")
   private final String customClaimNamespace;
 
@@ -51,15 +52,14 @@ public class UsersController {
   }
 
   private String emailAddress(JwtAuthenticationToken authentication) {
-    Map<String, Object> userDetails = authentication.getToken()
-                                                    .getClaimAsMap(customClaimNamespace + "/user");
+    Map<String, Object> userDetails =
+        authentication.getToken().getClaimAsMap(customClaimNamespace + "/user");
     return (String) userDetails.get("email");
   }
 
   private static boolean hasAdminRole(Authentication authentication) {
-    return authentication.getAuthorities()
-                         .stream()
-                         .map(GrantedAuthority::getAuthority)
-                         .anyMatch("ROLE_Admin"::equals);
+    return authentication.getAuthorities().stream()
+        .map(GrantedAuthority::getAuthority)
+        .anyMatch("ROLE_Admin"::equals);
   }
 }

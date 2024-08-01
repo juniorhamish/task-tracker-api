@@ -9,6 +9,8 @@ import org.springframework.security.test.context.support.WithSecurityContext;
 public @interface WithMockJWT {
 
   String scope() default "";
+
   String emailAddress() default "";
+
   String[] roles() default {};
 }

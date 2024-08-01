@@ -25,12 +25,12 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/actuator/**")
-                                                     .permitAll()
-                                                     .anyRequest()
-                                                     .authenticated())
-        .oauth2ResourceServer(oauth2 -> oauth2.jwt(
-            jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
+    http.authorizeHttpRequests(
+            authorize ->
+                authorize.requestMatchers("/actuator/**").permitAll().anyRequest().authenticated())
+        .oauth2ResourceServer(
+            oauth2 ->
+                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
     return http.build();
   }
 
@@ -38,14 +38,15 @@ public class SecurityConfig {
   public JwtAuthenticationConverter jwtAuthenticationConverter() {
     var originalConverter = new JwtGrantedAuthoritiesConverter();
     var jwtAuthenticationConverter = new JwtAuthenticationConverter();
-    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter((Jwt jwt) -> {
-      Collection<GrantedAuthority> result = originalConverter.convert(jwt);
-      var rolesConverter = new JwtGrantedAuthoritiesConverter();
-      rolesConverter.setAuthoritiesClaimName(customClaimNamespace + "/roles");
-      rolesConverter.setAuthorityPrefix("ROLE_");
-      result.addAll(rolesConverter.convert(jwt));
-      return result;
-    });
+    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(
+        (Jwt jwt) -> {
+          Collection<GrantedAuthority> result = originalConverter.convert(jwt);
+          var rolesConverter = new JwtGrantedAuthoritiesConverter();
+          rolesConverter.setAuthoritiesClaimName(customClaimNamespace + "/roles");
+          rolesConverter.setAuthorityPrefix("ROLE_");
+          result.addAll(rolesConverter.convert(jwt));
+          return result;
+        });
     return jwtAuthenticationConverter;
   }
 }

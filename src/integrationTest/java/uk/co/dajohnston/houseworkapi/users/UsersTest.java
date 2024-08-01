@@ -20,10 +20,8 @@ import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 @AutoConfigureMockMvc
 class UsersTest {
 
-  @Autowired
-  private MockMvc mockMvc;
-  @Autowired
-  private MongoTemplate mongoTemplate;
+  @Autowired private MockMvc mockMvc;
+  @Autowired private MongoTemplate mongoTemplate;
 
   @AfterEach
   void tearDown() {
@@ -33,20 +31,28 @@ class UsersTest {
   @Test
   @WithMockJWT(scope = "create:users read:users", roles = "Admin")
   void post_users_createsUser() throws Exception {
-    mockMvc.perform(post("/users").content("""
+    mockMvc
+        .perform(
+            post("/users")
+                .content(
+                    """
                                       {
                                         "firstName": "David",
                                         "lastName": "Johnston",
                                         "emailAddress": "david.johnston@example.com"
                                       }
                                       """)
-                                  .contentType(APPLICATION_JSON)
-                                  .with(csrf()))
-           .andExpect(status().isCreated());
+                .contentType(APPLICATION_JSON)
+                .with(csrf()))
+        .andExpect(status().isCreated());
 
-    mockMvc.perform(get("/users").with(csrf()))
-           .andExpect(status().isOk())
-           .andExpect(content().json("""
+    mockMvc
+        .perform(get("/users").with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(
+            content()
+                .json(
+                    """
                [
                  {
                    "firstName": "David",

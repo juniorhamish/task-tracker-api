@@ -17,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UsersServiceTest {
 
-  @Mock
-  private UsersRepository usersRepository;
+  @Mock private UsersRepository usersRepository;
   private UsersService usersService;
 
   @BeforeEach
@@ -47,20 +46,25 @@ class UsersServiceTest {
 
   @Test
   void findAll_returnsAllUsersFromRepository() {
-    when(usersRepository.findAll()).thenReturn(
-        List.of(new User("David", "Johnston", "david.johnston@example.com"),
-            new User("Bobby", "Davro", "bobby.davro@example.com")));
+    when(usersRepository.findAll())
+        .thenReturn(
+            List.of(
+                new User("David", "Johnston", "david.johnston@example.com"),
+                new User("Bobby", "Davro", "bobby.davro@example.com")));
 
     List<User> users = usersService.findAll();
 
-    assertThat(users, contains(new User("David", "Johnston", "david.johnston@example.com"),
-        new User("Bobby", "Davro", "bobby.davro@example.com")));
+    assertThat(
+        users,
+        contains(
+            new User("David", "Johnston", "david.johnston@example.com"),
+            new User("Bobby", "Davro", "bobby.davro@example.com")));
   }
 
   @Test
   void findAllScopedUsers_returnsUserWithEmailAddressFromRepository() {
-    when(usersRepository.findByEmailAddress(any())).thenReturn(
-        new User("David", "Johnston", "david.johnston@example.com"));
+    when(usersRepository.findByEmailAddress(any()))
+        .thenReturn(new User("David", "Johnston", "david.johnston@example.com"));
 
     List<User> users = usersService.findScopedUsers("david.johnston@example.com");
 

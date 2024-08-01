@@ -13,12 +13,10 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class ActuatorTest {
 
-  @Autowired
-  private MockMvc mockMvc;
+  @Autowired private MockMvc mockMvc;
 
   @Test
   void get_health_requiresNoAuthentication() throws Exception {
-    mockMvc.perform(get("/actuator/health"))
-           .andExpect(status().isOk());
+    mockMvc.perform(get("/actuator/health")).andExpect(status().isOk());
   }
 }
