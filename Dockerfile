@@ -1,8 +1,14 @@
 # syntax=docker/dockerfile:experimental
 FROM amazoncorretto:21-alpine-jdk AS build
-RUN apk upgrade --update-cache --no-cache && apk add dos2unix
+RUN apk upgrade --update-cache --no-cache && apk add dos2unix && apk cache clean
 WORKDIR /workspace/app
-COPY . /workspace/app
+COPY ./gradlew .
+COPY ./gradle ./gradle
+COPY ./gradle.properties .
+COPY ./lombok.config .
+COPY ./settings.gradle .
+COPY ./build.gradle .
+COPY ./src ./src
 RUN dos2unix ./gradlew
 RUN sed -i 's/all.zip/bin.zip/g' ./gradle/wrapper/gradle-wrapper.properties
 RUN --mount=type=cache,target=/root/.gradle \
@@ -61,8 +67,4 @@ ARG DEPENDENCY=/workspace/app/build/dependency
 COPY --from=build ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY --from=build ${DEPENDENCY}/META-INF /app/META-INF
 COPY --from=build ${DEPENDENCY}/BOOT-INF/classes /app
-ENV OTEL_EXPORTER_OTLP_PROTOCOL="http/protobuf"
-ENV OTEL_EXPORTER_OTLP_ENDPOINT="https://otlp-gateway-prod-eu-west-2.grafana.net/otlp"
-ENV OTEL_SERVICE_NAME="housework-api"
-ENV OTEL_RESOURCE_ATTRIBUTES="deployment.environment=$RENDER_EXTERNAL_HOSTNAME"
 ENTRYPOINT ["java","-cp","app:app/lib/*","uk.co.dajohnston.houseworkapi.HouseworkApiApplication"]
