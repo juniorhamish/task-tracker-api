@@ -11,6 +11,10 @@ on:
 
 jobs:
   build:
+    env:
+      SPRING_DATA_MONGODB_URI: ${{ secrets.SPRING_DATA_MONGODB_URI }}
+      SPRING_DATA_MONGODB_DATABASE: IT_${{ github.run_id }}-${{ github.run_attempt }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -33,13 +37,13 @@ jobs:
     - name: Test
       run: ./gradlew test
     - name: Integration Test
-      run: ./gradlew integrationTest -DSPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }} -DSPRING_DATA_MONGODB_DATABASE="IT_${{ github.run_id }}-${{ github.run_attempt }}"
+      run: ./gradlew integrationTest
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
-      run: ./gradlew sonar -DSONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+      run: ./gradlew sonar
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
-      run: ./gradlew sonar -DSONAR_TOKEN=${{ secrets.SONAR_TOKEN }} -Dsonar.pullrequest.branch='${{ github.head_ref }}'' -Dsonar.pullrequest.base='${{ github.event.pull_request.base.ref }}' -Dsonar.pullrequest.key='${{ github.event.number }}'
+      run: ./gradlew sonar -Dsonar.pullrequest.branch="${{ github.head_ref }}" -Dsonar.pullrequest.base="${{ github.event.pull_request.base.ref }}" -Dsonar.pullrequest.key="${{ github.event.number }}"
 
   dependency-submission:
     runs-on: ubuntu-latest
