@@ -1,29 +1,25 @@
 # syntax=docker/dockerfile:experimental
-FROM amazoncorretto:21-alpine-jdk AS gradle-base
-RUN apk upgrade --update-cache --no-cache && apk add dos2unix && apk cache clean
+FROM gradle:8.9-alpine AS gradle-base
+ENV GRADLE_USER_HOME /root/.gradle
 WORKDIR /workspace/app
-COPY ./gradle ./gradle
-RUN sed -i 's/all.zip/bin.zip/g' ./gradle/wrapper/gradle-wrapper.properties
-COPY ./gradlew .
-RUN dos2unix ./gradlew
 COPY ./gradle.properties .
 COPY ./settings.gradle .
 COPY ./build.gradle .
 RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew --no-daemon \
+    gradle --no-daemon \
     dependencies --stacktrace
 
 FROM gradle-base AS build
 COPY ./lombok.config .
 COPY ./src ./src
 RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew --no-daemon \
+    gradle --no-daemon \
     build -x test -x integrationTest
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build AS test
 RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew --no-daemon \
+    gradle --no-daemon \
     -Dtest.ignoreFailures=true \
     test
 
@@ -33,7 +29,7 @@ RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SPRING_DATA_MONGODB_DATABASE \
     export SPRING_DATA_MONGODB_URI=$(cat /run/secrets/SPRING_DATA_MONGODB_URI) && \
     export SPRING_DATA_MONGODB_DATABASE=$(cat /run/secrets/SPRING_DATA_MONGODB_DATABASE) && \
-    ./gradlew --no-daemon \
+    gradle --no-daemon \
     -Dtest.ignoreFailures=true \
     integrationTest
 
@@ -42,7 +38,7 @@ COPY .git ./.git
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SONAR_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
-    ./gradlew --no-daemon \
+    gradle --no-daemon \
     sonar
 
 FROM integration-test AS sonar-pr
@@ -53,7 +49,7 @@ ARG sonar_pull_request_base
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SONAR_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
-    ./gradlew --no-daemon \
+    gradle --no-daemon \
     -Dsonar.pullrequest.branch="$sonar_pull_request_branch_name" \
     -Dsonar.pullrequest.base="$sonar_pull_request_base" \
     -Dsonar.pullrequest.key="$sonar_pull_request_key" \
