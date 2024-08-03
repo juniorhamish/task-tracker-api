@@ -39,32 +39,32 @@ jobs:
         context: .
         target: gradle-base
         load: true
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/base
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/base,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:base
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:base,mode=max
     - name: Build
       uses: docker/build-push-action@v6
       with:
         context: .
         target: build
         load: true
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/build
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/build,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:build
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:build,mode=max
     - name: Unit Test
       uses: docker/build-push-action@v6
       with:
         context: .
         target: test
         load: true
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/test
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/test,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:test
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:test,mode=max
     - name: Export Unit Test Reports
       uses: docker/build-push-action@v6
       with:
         context: .
         target: unit-test-results
         outputs: type=local,dest=out
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/unit-test-results
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/unit-test-results,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:unit-test-results
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:unit-test-results,mode=max
     - name: Report
       uses: dorny/test-reporter@v1
       if: always()
@@ -82,16 +82,16 @@ jobs:
         secrets: |
           "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
           "SPRING_DATA_MONGODB_DATABASE=IT_${{ github.run_id }}-${{ github.run_attempt }}"
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/integration-test
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/integration-test,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:integration-test
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:integration-test,mode=max
     - name: Export Integration Test Reports
       uses: docker/build-push-action@v6
       with:
         context: .
         target: integration-test-results
         outputs: type=local,dest=out
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/integration-test-results
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/integration-test-results,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:integration-test-results
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:integration-test-results,mode=max
     - name: Report
       uses: dorny/test-reporter@v1
       if: always()
@@ -109,8 +109,8 @@ jobs:
         load: true
         secrets: |
           SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/sonar
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/sonar,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:sonar
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:sonar,mode=max
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
       uses: docker/build-push-action@v6
@@ -124,8 +124,8 @@ jobs:
           sonar_pull_request_base=${{ github.event.pull_request.base.ref }}
         secrets: |
           SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
-        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/sonar-pr
-        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}/cache/sonar-pr,mode=max
+        cache-from: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:sonar-pr
+        cache-to: type=registry,ref=${{ secrets.DOCKER_REPO }}-cache:sonar-pr,mode=max
     - name: Build Docker image
       if: ${{ github.ref == 'refs/heads/main' }}
       uses: docker/build-push-action@v6
