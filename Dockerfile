@@ -1,19 +1,24 @@
 # syntax=docker/dockerfile:experimental
-FROM amazoncorretto:21-alpine-jdk AS build
+FROM amazoncorretto:21-alpine-jdk AS gradle-base
 RUN apk upgrade --update-cache --no-cache && apk add dos2unix && apk cache clean
 WORKDIR /workspace/app
-COPY ./gradlew .
 COPY ./gradle ./gradle
+RUN sed -i 's/all.zip/bin.zip/g' ./gradle/wrapper/gradle-wrapper.properties
+COPY ./gradlew .
+RUN dos2unix ./gradlew
 COPY ./gradle.properties .
-COPY ./lombok.config .
 COPY ./settings.gradle .
 COPY ./build.gradle .
-COPY ./src ./src
-RUN dos2unix ./gradlew
-RUN sed -i 's/all.zip/bin.zip/g' ./gradle/wrapper/gradle-wrapper.properties
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew --no-daemon \
-    clean build -x test -x integrationTest
+    dependencies --stacktrace --profile
+
+FROM gradle-base AS build
+COPY ./lombok.config .
+COPY ./src ./src
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew --no-daemon \
+    build -x test -x integrationTest --profile
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build AS test
@@ -57,6 +62,9 @@ COPY --from=test /workspace/app/build/test-results/test ./test-results/test
 
 FROM scratch AS integration-test-results
 COPY --from=integration-test /workspace/app/build/test-results/integrationTest ./test-results/integrationTest
+
+FROM scratch AS gradle-profile-report
+COPY --from=integration-test /workspace/app/build/reports/profile/*.html ./profile-reports/
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
