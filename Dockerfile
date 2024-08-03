@@ -38,6 +38,7 @@ RUN --mount=type=cache,target=/root/.gradle \
     integrationTest
 
 FROM integration-test AS sonar
+COPY .git ./.git
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SONAR_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
@@ -45,6 +46,7 @@ RUN --mount=type=cache,target=/root/.gradle \
     sonar
 
 FROM integration-test AS sonar-pr
+COPY .git ./.git
 ARG sonar_pull_request_branch_name
 ARG sonar_pull_request_key
 ARG sonar_pull_request_base
