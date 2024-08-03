@@ -60,7 +60,7 @@ jobs:
         outputs: type=local,dest=out
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Report
+    - name: Publish Unit Test Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
@@ -87,7 +87,7 @@ jobs:
         outputs: type=local,dest=out
         cache-from: type=gha
         cache-to: type=gha,mode=max
-    - name: Report
+    - name: Publish Integration Test Report
       uses: dorny/test-reporter@v1
       if: always()
       with:
