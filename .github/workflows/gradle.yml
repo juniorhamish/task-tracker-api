@@ -36,9 +36,25 @@ jobs:
     - name: Build
       run: ./gradlew build -x test -x integrationTest
     - name: Test
-      run: ./gradlew test
+      run: ./gradlew -Dtest.ignoreFailures=true test
+    - name: Unit Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Unit Test Results
+        path: build/test-results/test/*.xml
+        reporter: java-junit
+        fail-on-error: true
     - name: Integration Test
-      run: ./gradlew integrationTest
+      run: ./gradlew -Dtest.ignoreFailures=true integrationTest
+    - name: Integration Test Report
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Integration Test Results
+        path: build/test-results/integrationTest/*.xml
+        reporter: java-junit
+        fail-on-error: true
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
       run: ./gradlew sonar
