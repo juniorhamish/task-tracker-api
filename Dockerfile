@@ -4,6 +4,8 @@ WORKDIR /workspace/app
 COPY build/libs build/libs
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency
 WORKDIR /workspace/app/build/dependency
+RUN ls -al .
+RUN ls -al ../libs
 RUN jar -xf ../libs/*.jar
 RUN ls -al .
 RUN ls -al ../libs
