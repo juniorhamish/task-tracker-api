@@ -1,26 +1,31 @@
 # syntax=docker/dockerfile:experimental
 FROM gradle:8.9-alpine AS gradle-base
+ENV GRADLE_USER_HOME /root/.gradle
 WORKDIR /workspace/app
 COPY ./gradle.properties .
 COPY ./settings.gradle .
 COPY ./build.gradle .
-RUN gradle --no-daemon \
+RUN --mount=type=cache,target=/root/.gradle \
+    gradle --no-daemon \
     dependencies --stacktrace
 
 FROM gradle-base AS build
 COPY ./lombok.config .
 COPY ./src ./src
-RUN gradle --no-daemon \
+RUN --mount=type=cache,target=/root/.gradle \
+    gradle --no-daemon \
     build -x test -x integrationTest
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build AS test
-RUN gradle --no-daemon \
+RUN --mount=type=cache,target=/root/.gradle \
+    gradle --no-daemon \
     -Dtest.ignoreFailures=true \
     test
 
 FROM test AS integration-test
-RUN --mount=type=secret,id=SPRING_DATA_MONGODB_URI \
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=secret,id=SPRING_DATA_MONGODB_URI \
     --mount=type=secret,id=SPRING_DATA_MONGODB_DATABASE \
     export SPRING_DATA_MONGODB_URI=$(cat /run/secrets/SPRING_DATA_MONGODB_URI) && \
     export SPRING_DATA_MONGODB_DATABASE=$(cat /run/secrets/SPRING_DATA_MONGODB_DATABASE) && \
@@ -30,7 +35,8 @@ RUN --mount=type=secret,id=SPRING_DATA_MONGODB_URI \
 
 FROM integration-test AS sonar
 COPY .git ./.git
-RUN --mount=type=secret,id=SONAR_TOKEN \
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=secret,id=SONAR_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
     gradle --no-daemon \
     sonar
@@ -40,7 +46,8 @@ COPY .git ./.git
 ARG sonar_pull_request_branch_name
 ARG sonar_pull_request_key
 ARG sonar_pull_request_base
-RUN --mount=type=secret,id=SONAR_TOKEN \
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=secret,id=SONAR_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
     gradle --no-daemon \
     -Dsonar.pullrequest.branch="$sonar_pull_request_branch_name" \
