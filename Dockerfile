@@ -11,7 +11,7 @@ COPY ./settings.gradle .
 COPY ./build.gradle .
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew --no-daemon \
-    dependencies --stacktrace --profile
+    dependencies --stacktrace
 
 FROM gradle-base AS build
 COPY ./lombok.config .
@@ -64,9 +64,6 @@ COPY --from=test /workspace/app/build/test-results/test ./test-results/test
 
 FROM scratch AS integration-test-results
 COPY --from=integration-test /workspace/app/build/test-results/integrationTest ./test-results/integrationTest
-
-FROM scratch AS gradle-profile-report
-COPY --from=integration-test /workspace/app/build/reports/profile/*.html ./profile-reports/index.html
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj

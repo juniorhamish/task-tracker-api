@@ -87,19 +87,6 @@ jobs:
         path: out/test-results/integrationTest/*.xml
         reporter: java-junit
         fail-on-error: true
-    - name: Export Gradle Build Reports
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        target: gradle-profile-report
-        outputs: type=local,dest=out
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
-    - name: HTML Preview
-      id: html_preview
-      uses: pavi2410/html-preview-action@v2
-      with:
-        html_file: 'out/profile-reports/index.html'
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
       uses: docker/build-push-action@v6
