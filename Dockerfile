@@ -2,13 +2,7 @@
 FROM amazoncorretto:21-alpine-jdk AS build
 WORKDIR /workspace/app
 COPY build/libs build/libs
-RUN rm build/libs/*-plain.jar && mkdir -p build/dependency
-WORKDIR /workspace/app/build/dependency
-RUN ls -al .
-RUN ls -al ../libs
-RUN jar -xf ../libs/*.jar
-RUN ls -al .
-RUN ls -al ../libs
+RUN rm build/libs/*-plain.jar && rm build/libs/*-test-fixtures.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj

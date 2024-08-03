@@ -47,19 +47,6 @@ jobs:
       uses: gradle/actions/setup-gradle@dbbdc275be76ac10734476cc723d82dfe7ec6eda # v3.4.2
     - name: Build
       run: ./gradlew build -x test -x integrationTest
-    - name: Log in to Docker Hub
-      if: ${{ github.ref == 'refs/heads/main' }}
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_PASS }}
-    - name: Build Docker image
-      if: ${{ github.ref == 'refs/heads/main' }}
-      uses: docker/build-push-action@v6
-      with:
-        context: .
-        push: true
-        tags: ${{ steps.meta.outputs.tags }}
     - name: Test
       run: ./gradlew -Dtest.ignoreFailures=true test
     - name: Unit Test Report
@@ -86,6 +73,19 @@ jobs:
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
       run: ./gradlew sonar -Dsonar.pullrequest.branch="${{ github.head_ref }}" -Dsonar.pullrequest.base="${{ github.event.pull_request.base.ref }}" -Dsonar.pullrequest.key="${{ github.event.number }}"
+    - name: Log in to Docker Hub
+      if: ${{ github.ref == 'refs/heads/main' }}
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_PASS }}
+    - name: Build Docker image
+      if: ${{ github.ref == 'refs/heads/main' }}
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
     - name: Deploy
       if: ${{ github.ref == 'refs/heads/main' }}
       env:
