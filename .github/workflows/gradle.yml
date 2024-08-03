@@ -15,6 +15,7 @@ jobs:
       SPRING_DATA_MONGODB_URI: ${{ secrets.SPRING_DATA_MONGODB_URI }}
       SPRING_DATA_MONGODB_DATABASE: IT_${{ github.run_id }}-${{ github.run_attempt }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      BETTER_STACK_TOKEN: ${{ secrets.BETTER_STACK_TOKEN }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
