@@ -73,11 +73,6 @@ jobs:
     - name: Sonar PR
       if: github.event.pull_request.base.ref != null
       run: ./gradlew sonar -Dsonar.pullrequest.branch="${{ github.head_ref }}" -Dsonar.pullrequest.base="${{ github.event.pull_request.base.ref }}" -Dsonar.pullrequest.key="${{ github.event.number }}"
-    - name: Upload build artifacts
-      uses: actions/upload-artifact@v4
-      with:
-        name: Package
-        path: build/libs
     - name: Log in to Docker Hub
       if: ${{ github.ref == 'refs/heads/main' }}
       uses: docker/login-action@v3
@@ -96,6 +91,11 @@ jobs:
       env:
         deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
       run: curl "$deploy_url"
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: Package
+        path: build/libs
   dependency-submission:
     runs-on: ubuntu-latest
     permissions:
