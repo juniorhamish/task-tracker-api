@@ -5,9 +5,8 @@ COPY build/libs build/libs
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency
 WORKDIR /workspace/app/build/dependency
 RUN jar -xf ../libs/*.jar
-RUN ls -al build
-RUN ls -al build/libs
-RUN ls -al build/dependency
+RUN ls -al .
+RUN ls -al ../libs
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
