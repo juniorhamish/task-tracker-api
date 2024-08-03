@@ -18,7 +18,7 @@ COPY ./lombok.config .
 COPY ./src ./src
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew --no-daemon \
-    build -x test -x integrationTest --profile
+    build -x test -x integrationTest
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build AS test
@@ -66,7 +66,7 @@ FROM scratch AS integration-test-results
 COPY --from=integration-test /workspace/app/build/test-results/integrationTest ./test-results/integrationTest
 
 FROM scratch AS gradle-profile-report
-COPY --from=integration-test /workspace/app/build/reports/profile/*.html ./profile-reports/
+COPY --from=integration-test /workspace/app/build/reports/profile/*.html ./profile-reports/index.html
 
 FROM amazoncorretto:21-alpine-jdk
 RUN addgroup -S dj && adduser -S dj -G dj
