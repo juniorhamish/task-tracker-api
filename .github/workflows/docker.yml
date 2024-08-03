@@ -79,6 +79,14 @@ jobs:
         outputs: type=local,dest=out
         cache-from: type=gha
         cache-to: type=gha,mode=max
+    - name: Export Gradle Build Reports
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        target: gradle-profile-report
+        outputs: type=local,dest=out
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
     - name: Report
       uses: dorny/test-reporter@v1
       if: always()
