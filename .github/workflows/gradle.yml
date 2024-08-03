@@ -33,7 +33,7 @@ jobs:
     - name: Test
       run: ./gradlew test
     - name: Integration Test
-      run: ./gradlew integrationTest -DSPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }} -DSPRING_DATA_MONGODB_DATABASE='IT_${{ github.run_id }}-${{ github.run_attempt }}'
+      run: ./gradlew integrationTest -DSPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }} -DSPRING_DATA_MONGODB_DATABASE="IT_${{ github.run_id }}-${{ github.run_attempt }}"
     - name: Sonar Main
       if: github.event.pull_request.base.ref == null
       run: ./gradlew sonar -DSONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
