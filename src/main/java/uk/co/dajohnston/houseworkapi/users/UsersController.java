@@ -55,7 +55,54 @@ public class UsersController {
 
   @DeleteMapping("/users/{id}")
   public void delete(@PathVariable String id) {
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
+    logDeletion(id);
     usersService.delete(id);
+  }
+
+  private void logDeletion(@PathVariable String id) {
+    log.info("Deleting user with id {}", id);
   }
 
   private String emailAddress(JwtAuthenticationToken authentication) {
