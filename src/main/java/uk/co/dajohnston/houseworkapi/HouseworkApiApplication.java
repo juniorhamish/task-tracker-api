@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 public class HouseworkApiApplication {
 
   public static void main(String[] args) {
-    System.out.println("Dave");
     SpringApplication.run(HouseworkApiApplication.class, args);
   }
 }
