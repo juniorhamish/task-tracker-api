@@ -61,7 +61,7 @@ jobs:
           secrets: |
             "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
             "SPRING_DATA_MONGODB_DATABASE=IT_${{ github.run_id }}-${{ github.run_attempt }}"
-            "BETTER_STACK_TOKEN"=${{ secrets.BETTER_STACK_TOKEN }}
+            "BETTER_STACK_TOKEN=${{ secrets.BETTER_STACK_TOKEN }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export Integration Test Reports
