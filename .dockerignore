@@ -1,6 +1,5 @@
-.github
 .gradle
 .idea
 out
 logs
-Dockerfile
+build
