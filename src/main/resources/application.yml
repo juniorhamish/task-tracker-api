@@ -15,4 +15,16 @@ management:
   endpoints:
     web:
       exposure:
-        include: ["health", "info", "metrics", "prometheus"]
+        include: [ "health", "info", "metrics", "prometheus" ]
+springdoc:
+  group-configs:
+    - group: Actuator
+      paths-to-match: /actuator/**
+    - group: Users
+      paths-to-match: /users/**
+  show-actuator: true
+  swagger-ui:
+    display-request-duration: true
+    oauth:
+      clientId: ${OAUTH_CLIENT_ID}
+      clientSecret: ${OAUTH_CLIENT_SECRET}

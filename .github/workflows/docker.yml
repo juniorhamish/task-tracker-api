@@ -89,6 +89,7 @@ jobs:
           load: true
           secrets: |
             SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Sonar PR
@@ -104,6 +105,7 @@ jobs:
             sonar_pull_request_base=${{ github.event.pull_request.base.ref }}
           secrets: |
             SONAR_TOKEN=${{ secrets.SONAR_TOKEN }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Log in to Docker Hub

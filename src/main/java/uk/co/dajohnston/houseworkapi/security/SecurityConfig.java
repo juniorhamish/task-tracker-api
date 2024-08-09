@@ -20,6 +20,10 @@ import org.springframework.security.web.SecurityFilterChain;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+  private static final String[] SWAGGER_WHITELIST = {
+    "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-resources"
+  };
+
   @Value("${jwt.claims.namespace}")
   private final String customClaimNamespace;
 
@@ -27,7 +31,13 @@ public class SecurityConfig {
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
             authorize ->
-                authorize.requestMatchers("/actuator/**").permitAll().anyRequest().authenticated())
+                authorize
+                    .requestMatchers("/actuator/**")
+                    .permitAll()
+                    .requestMatchers(SWAGGER_WHITELIST)
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .oauth2ResourceServer(
             oauth2 ->
                 oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
