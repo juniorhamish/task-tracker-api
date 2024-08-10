@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,8 +49,8 @@ class UsersServiceTest {
 
   @Test
   void create_duplicateEmail_throwsDuplicateException() {
-    when(usersRepository.existsByEmailAddress("david.johnston@example.com")).thenReturn(true);
     User user = new User(null, null, "david.johnston@example.com");
+    when(usersRepository.save(user)).thenThrow(DuplicateKeyException.class);
 
     assertThrows(DuplicateResourceException.class, () -> usersService.create(user));
   }

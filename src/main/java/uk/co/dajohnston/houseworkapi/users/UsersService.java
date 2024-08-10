@@ -5,6 +5,7 @@ import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 
@@ -15,10 +16,11 @@ public class UsersService {
   private final UsersRepository usersRepository;
 
   public User create(User user) {
-    if (usersRepository.existsByEmailAddress(user.emailAddress())) {
-      throw new DuplicateResourceException();
+    try {
+      return usersRepository.save(user);
+    } catch (DuplicateKeyException e) {
+      throw new DuplicateResourceException(e);
     }
-    return usersRepository.save(user);
   }
 
   public List<User> findAll() {

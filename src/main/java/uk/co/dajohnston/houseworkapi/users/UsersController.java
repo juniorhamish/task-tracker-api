@@ -38,10 +38,9 @@ public class UsersController {
     try {
       return usersService.create(user);
     } catch (DuplicateResourceException e) {
+      log.error("Failed to create user %s".formatted(user.emailAddress()), e);
       throw new ResponseStatusException(
-          CONFLICT,
-          "User with email address %s already exists".formatted(user.emailAddress()),
-          e);
+          CONFLICT, "User with email address %s already exists".formatted(user.emailAddress()), e);
     }
   }
 
