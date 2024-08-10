@@ -31,4 +31,8 @@ public class UsersService {
   public List<UserDTO> findScopedUsers(String emailAddress) {
     return singletonList(userMapper.toDTO(usersRepository.findByEmailAddress(emailAddress)));
   }
+
+  public void delete(String id) {
+    usersRepository.deleteById(id);
+  }
 }
