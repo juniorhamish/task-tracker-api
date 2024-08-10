@@ -1,5 +1,6 @@
 package uk.co.dajohnston.houseworkapi.users;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 
 import java.util.List;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,16 +33,22 @@ public class UsersController {
   @PostMapping("/users")
   @ResponseStatus(CREATED)
   @PreAuthorize("hasAuthority('SCOPE_create:users')")
-  public User create(@RequestBody User user) {
+  public UserDTO create(@RequestBody UserDTO user) {
     log.info("Creating user.");
-    return usersService.create(user);
+    try {
+      return usersService.create(user);
+    } catch (DuplicateResourceException e) {
+      log.error("Failed to create user %s".formatted(user.emailAddress()), e);
+      throw new ResponseStatusException(
+          CONFLICT, "User with email address %s already exists".formatted(user.emailAddress()), e);
+    }
   }
 
   @GetMapping("/users")
   @PreAuthorize("hasAuthority('SCOPE_read:users')")
-  public List<User> findAll(JwtAuthenticationToken authentication) {
+  public List<UserDTO> findAll(JwtAuthenticationToken authentication) {
     log.info("Finding all users.");
-    List<User> users;
+    List<UserDTO> users;
     if (hasAdminRole(authentication)) {
       log.info("User is admin.");
       users = usersService.findAll();

@@ -1,7 +1,11 @@
+server:
+  error:
+    include-stacktrace: never
 spring:
   data:
     mongodb:
       database: housework-api
+      auto-index-creation: true
   security:
     oauth2:
       resourceserver:

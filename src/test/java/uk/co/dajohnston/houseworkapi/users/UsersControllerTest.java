@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 import uk.co.dajohnston.houseworkapi.security.SecurityConfig;
 import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 
@@ -33,7 +35,7 @@ class UsersControllerTest {
   @Test
   void post_returnsCreatedUser() throws Exception {
     when(usersService.create(any()))
-        .thenReturn(new User("First", "Last", "first.last@example.com"));
+        .thenReturn(new UserDTO("First", "Last", "first.last@example.com"));
 
     mockMvc
         .perform(
@@ -41,23 +43,23 @@ class UsersControllerTest {
                 .with(csrf())
                 .content(
                     """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
                 .contentType(APPLICATION_JSON))
         .andExpect(
             content()
                 .json(
                     """
-               {
-                 "firstName": "First",
-                 "lastName": "Last",
-                 "emailAddress": "first.last@example.com"
-               }
-               """,
+                    {
+                      "firstName": "First",
+                      "lastName": "Last",
+                      "emailAddress": "first.last@example.com"
+                    }
+                    """,
                     true));
   }
 
@@ -68,15 +70,35 @@ class UsersControllerTest {
             .with(csrf())
             .content(
                 """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                {
+                  "firstName": "David",
+                  "lastName": "Johnston",
+                  "emailAddress": "david.johnston@example.com"
+                }
+                """)
             .contentType(APPLICATION_JSON));
 
-    verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
+    verify(usersService).create(new UserDTO("David", "Johnston", "david.johnston@example.com"));
+  }
+
+  @Test
+  void post_duplicateEmailAddress_returns409Response() throws Exception {
+    when(usersService.create(any())).thenThrow(DuplicateResourceException.class);
+
+    mockMvc
+        .perform(
+            post("/users")
+                .with(csrf())
+                .content(
+                    """
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
+                .contentType(APPLICATION_JSON))
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -87,8 +109,8 @@ class UsersControllerTest {
     when(usersService.findAll())
         .thenReturn(
             List.of(
-                new User("David", "Johnston", "david.johnston@example.com"),
-                new User("Bobby", "Davro", "bobby.davro@example.com")));
+                new UserDTO("David", "Johnston", "david.johnston@example.com"),
+                new UserDTO("Bobby", "Davro", "bobby.davro@example.com")));
 
     mockMvc
         .perform(get("/users"))
@@ -96,19 +118,19 @@ class UsersControllerTest {
             content()
                 .json(
                     """
-               [
-                 {
-                   "firstName": "David",
-                   "lastName": "Johnston",
-                   "emailAddress": "david.johnston@example.com"
-                 },
-                 {
-                   "firstName": "Bobby",
-                   "lastName": "Davro",
-                   "emailAddress": "bobby.davro@example.com"
-                 }
-               ]
-               """));
+                    [
+                      {
+                        "firstName": "David",
+                        "lastName": "Johnston",
+                        "emailAddress": "david.johnston@example.com"
+                      },
+                      {
+                        "firstName": "Bobby",
+                        "lastName": "Davro",
+                        "emailAddress": "bobby.davro@example.com"
+                      }
+                    ]
+                    """));
   }
 
   @Test
@@ -125,7 +147,7 @@ class UsersControllerTest {
   @WithMockJWT(scope = "read:users")
   void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
     when(usersService.findScopedUsers(any()))
-        .thenReturn(List.of(new User("David", "Johnston", "david.johnston@example.com")));
+        .thenReturn(List.of(new UserDTO("David", "Johnston", "david.johnston@example.com")));
 
     mockMvc
         .perform(get("/users"))
@@ -133,14 +155,14 @@ class UsersControllerTest {
             content()
                 .json(
                     """
-               [
-                 {
-                   "firstName": "David",
-                   "lastName": "Johnston",
-                   "emailAddress": "david.johnston@example.com"
-                 }
-               ]
-               """));
+                    [
+                      {
+                        "firstName": "David",
+                        "lastName": "Johnston",
+                        "emailAddress": "david.johnston@example.com"
+                      }
+                    ]
+                    """));
   }
 
   @Test
