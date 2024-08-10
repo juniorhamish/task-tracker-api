@@ -8,6 +8,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 import uk.co.dajohnston.houseworkapi.security.SecurityConfig;
 import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
 
@@ -41,23 +43,23 @@ class UsersControllerTest {
                 .with(csrf())
                 .content(
                     """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
                 .contentType(APPLICATION_JSON))
         .andExpect(
             content()
                 .json(
                     """
-               {
-                 "firstName": "First",
-                 "lastName": "Last",
-                 "emailAddress": "first.last@example.com"
-               }
-               """,
+                    {
+                      "firstName": "First",
+                      "lastName": "Last",
+                      "emailAddress": "first.last@example.com"
+                    }
+                    """,
                     true));
   }
 
@@ -68,15 +70,35 @@ class UsersControllerTest {
             .with(csrf())
             .content(
                 """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                {
+                  "firstName": "David",
+                  "lastName": "Johnston",
+                  "emailAddress": "david.johnston@example.com"
+                }
+                """)
             .contentType(APPLICATION_JSON));
 
     verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
+  }
+
+  @Test
+  void post_duplicateEmailAddress_returns409Response() throws Exception {
+    when(usersService.create(any())).thenThrow(DuplicateResourceException.class);
+
+    mockMvc
+        .perform(
+            post("/users")
+                .with(csrf())
+                .content(
+                    """
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
+                .contentType(APPLICATION_JSON))
+        .andExpect(status().isConflict());
   }
 
   @Test
@@ -96,19 +118,19 @@ class UsersControllerTest {
             content()
                 .json(
                     """
-               [
-                 {
-                   "firstName": "David",
-                   "lastName": "Johnston",
-                   "emailAddress": "david.johnston@example.com"
-                 },
-                 {
-                   "firstName": "Bobby",
-                   "lastName": "Davro",
-                   "emailAddress": "bobby.davro@example.com"
-                 }
-               ]
-               """));
+                    [
+                      {
+                        "firstName": "David",
+                        "lastName": "Johnston",
+                        "emailAddress": "david.johnston@example.com"
+                      },
+                      {
+                        "firstName": "Bobby",
+                        "lastName": "Davro",
+                        "emailAddress": "bobby.davro@example.com"
+                      }
+                    ]
+                    """));
   }
 
   @Test
@@ -133,14 +155,14 @@ class UsersControllerTest {
             content()
                 .json(
                     """
-               [
-                 {
-                   "firstName": "David",
-                   "lastName": "Johnston",
-                   "emailAddress": "david.johnston@example.com"
-                 }
-               ]
-               """));
+                    [
+                      {
+                        "firstName": "David",
+                        "lastName": "Johnston",
+                        "emailAddress": "david.johnston@example.com"
+                      }
+                    ]
+                    """));
   }
 
   @Test

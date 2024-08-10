@@ -6,6 +6,7 @@ import static java.util.stream.StreamSupport.stream;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +15,9 @@ public class UsersService {
   private final UsersRepository usersRepository;
 
   public User create(User user) {
+    if (usersRepository.existsByEmailAddress(user.emailAddress())) {
+      throw new DuplicateResourceException();
+    }
     return usersRepository.save(user);
   }
 

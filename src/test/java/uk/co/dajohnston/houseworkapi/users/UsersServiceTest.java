@@ -3,6 +3,7 @@ package uk.co.dajohnston.houseworkapi.users;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 
 @ExtendWith(MockitoExtension.class)
 class UsersServiceTest {
@@ -42,6 +44,14 @@ class UsersServiceTest {
     User result = usersService.create(new User(null, null, null));
 
     assertThat(result, is(user));
+  }
+
+  @Test
+  void create_duplicateEmail_throwsDuplicateException() {
+    when(usersRepository.existsByEmailAddress("david.johnston@example.com")).thenReturn(true);
+    User user = new User(null, null, "david.johnston@example.com");
+
+    assertThrows(DuplicateResourceException.class, () -> usersService.create(user));
   }
 
   @Test
