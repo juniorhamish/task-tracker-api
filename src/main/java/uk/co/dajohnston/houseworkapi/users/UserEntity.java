@@ -4,5 +4,5 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
-public record User(
+public record UserEntity(
     String firstName, String lastName, @Indexed(unique = true) String emailAddress) {}

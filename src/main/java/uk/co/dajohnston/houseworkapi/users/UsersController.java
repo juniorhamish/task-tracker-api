@@ -33,7 +33,7 @@ public class UsersController {
   @PostMapping("/users")
   @ResponseStatus(CREATED)
   @PreAuthorize("hasAuthority('SCOPE_create:users')")
-  public User create(@RequestBody User user) {
+  public UserDTO create(@RequestBody UserDTO user) {
     log.info("Creating user.");
     try {
       return usersService.create(user);
@@ -46,9 +46,9 @@ public class UsersController {
 
   @GetMapping("/users")
   @PreAuthorize("hasAuthority('SCOPE_read:users')")
-  public List<User> findAll(JwtAuthenticationToken authentication) {
+  public List<UserDTO> findAll(JwtAuthenticationToken authentication) {
     log.info("Finding all users.");
-    List<User> users;
+    List<UserDTO> users;
     if (hasAdminRole(authentication)) {
       log.info("User is admin.");
       users = usersService.findAll();

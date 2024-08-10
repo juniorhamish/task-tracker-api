@@ -35,7 +35,7 @@ class UsersControllerTest {
   @Test
   void post_returnsCreatedUser() throws Exception {
     when(usersService.create(any()))
-        .thenReturn(new User("First", "Last", "first.last@example.com"));
+        .thenReturn(new UserDTO("First", "Last", "first.last@example.com"));
 
     mockMvc
         .perform(
@@ -78,7 +78,7 @@ class UsersControllerTest {
                 """)
             .contentType(APPLICATION_JSON));
 
-    verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
+    verify(usersService).create(new UserDTO("David", "Johnston", "david.johnston@example.com"));
   }
 
   @Test
@@ -109,8 +109,8 @@ class UsersControllerTest {
     when(usersService.findAll())
         .thenReturn(
             List.of(
-                new User("David", "Johnston", "david.johnston@example.com"),
-                new User("Bobby", "Davro", "bobby.davro@example.com")));
+                new UserDTO("David", "Johnston", "david.johnston@example.com"),
+                new UserDTO("Bobby", "Davro", "bobby.davro@example.com")));
 
     mockMvc
         .perform(get("/users"))
@@ -147,7 +147,7 @@ class UsersControllerTest {
   @WithMockJWT(scope = "read:users")
   void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
     when(usersService.findScopedUsers(any()))
-        .thenReturn(List.of(new User("David", "Johnston", "david.johnston@example.com")));
+        .thenReturn(List.of(new UserDTO("David", "Johnston", "david.johnston@example.com")));
 
     mockMvc
         .perform(get("/users"))
