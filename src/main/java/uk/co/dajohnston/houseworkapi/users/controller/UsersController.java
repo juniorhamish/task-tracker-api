@@ -1,4 +1,4 @@
-package uk.co.dajohnston.houseworkapi.users;
+package uk.co.dajohnston.houseworkapi.users.controller;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
+import uk.co.dajohnston.houseworkapi.users.UsersService;
 
 @RestController
 @RequiredArgsConstructor
