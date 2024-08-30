@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
 import uk.co.dajohnston.houseworkapi.security.SecurityConfig;
 import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
+import uk.co.dajohnston.houseworkapi.users.controller.UserDTO;
+import uk.co.dajohnston.houseworkapi.users.controller.UsersController;
 
 @WebMvcTest(UsersController.class)
 @AutoConfigureMockMvc

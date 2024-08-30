@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.co.dajohnston.houseworkapi.security.SecurityConfig;
 import uk.co.dajohnston.houseworkapi.security.WithMockJWT;
+import uk.co.dajohnston.houseworkapi.users.controller.UsersController;
 
 @WebMvcTest(UsersController.class)
 @Import(SecurityConfig.class)

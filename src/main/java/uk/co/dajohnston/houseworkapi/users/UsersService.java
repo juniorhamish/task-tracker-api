@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import uk.co.dajohnston.houseworkapi.exceptions.DuplicateResourceException;
+import uk.co.dajohnston.houseworkapi.users.controller.UserDTO;
+import uk.co.dajohnston.houseworkapi.users.repository.UsersRepository;
 
 @Service
 @RequiredArgsConstructor
