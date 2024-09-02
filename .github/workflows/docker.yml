@@ -53,6 +53,7 @@ jobs:
           reporter: java-junit
           fail-on-error: true
       - name: Integration Test
+        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -81,7 +82,7 @@ jobs:
           reporter: java-junit
           fail-on-error: true
       - name: Sonar Main
-        if: github.event.pull_request.base.ref == null
+        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
