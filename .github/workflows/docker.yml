@@ -66,6 +66,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export Integration Test Reports
+        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -75,7 +76,7 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Integration Test Results Report
         uses: dorny/test-reporter@v1
-        if: always()
+        if: github.event.pull_request.base.ref != null
         with:
           name: Integration Test Results
           path: out/test-results/integrationTest/*.xml
