@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(security = {@SecurityRequirement(name = "OAuth2")})
+@OpenAPIDefinition(
+    security = {@SecurityRequirement(name = "OAuth2")},
+    servers = {@Server(url = "/", description = "Default Server URL")})
 @SecurityScheme(
     name = "OAuth2",
     type = OAUTH2,
