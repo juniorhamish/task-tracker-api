@@ -133,8 +133,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: "projects/594170868558/locations/global/workloadIdentityPools/github-identity-pool/providers/my-repo"
-          project_id: "manifest-surfer-434311-n6"
+          workload_identity_provider: "projects/594170868558/locations/global/workloadIdentityPools/github-identity-pool/providers/github-actions-oidc"
+          service_account: "housework-api-sa@manifest-surfer-434311-n6.iam.gserviceaccount.com"
       - name: Deploy to Google
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: 'google-github-actions/deploy-cloudrun@v2'
