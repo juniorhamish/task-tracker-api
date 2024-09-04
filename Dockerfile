@@ -13,7 +13,8 @@ COPY ./build.gradle .
 FROM prepare AS build
 COPY ./lombok.config .
 COPY ./src ./src
-RUN ./gradlew \
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew \
     --no-daemon \
     clean build -x test -x integrationTest
 RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
