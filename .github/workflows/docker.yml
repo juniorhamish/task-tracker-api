@@ -140,4 +140,4 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: 'housework-api'
-          image: ${{ secrets.DOCKER_REPO }}
+          image: "docker.io/juniorhamish/housework-api:latest"
