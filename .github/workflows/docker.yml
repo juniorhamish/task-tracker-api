@@ -141,3 +141,4 @@ jobs:
         with:
           service: 'housework-api'
           image: "docker.io/juniorhamish/housework-api:latest"
+          region: "europe-west9"
