@@ -6,8 +6,10 @@ import static org.mapstruct.factory.Mappers.getMapper;
 import static org.mockito.Answers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
+import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.just;
 
 import org.junit.jupiter.api.AfterEach;
@@ -128,5 +130,14 @@ class Auth0UserInfoServiceTest {
         new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
 
     assertThat(userInfo.picture(), is("https://picture.com"));
+  }
+
+  @Test
+  void getUserInfo_sendsRequestToUsersAPIWithUserId() {
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
+
+    new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("ABC123");
+
+    verify(requestHeadersUriSpec).uri("users/ABC123");
   }
 }
