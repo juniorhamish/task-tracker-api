@@ -48,7 +48,7 @@ public class UsersController {
   @GetMapping("/users")
   @PreAuthorize("hasAuthority('SCOPE_read:users')")
   public List<UserDTO> findAll(JwtAuthenticationToken authentication) {
-    log.info("Finding all users.");
+    log.info("Finding all users!");
     List<UserDTO> users;
     if (hasAdminRole(authentication)) {
       log.info("User is admin.");
