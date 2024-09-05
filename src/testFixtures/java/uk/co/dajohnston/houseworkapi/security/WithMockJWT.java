@@ -13,4 +13,6 @@ public @interface WithMockJWT {
   String emailAddress() default "";
 
   String[] roles() default {};
+
+  String subject() default "";
 }

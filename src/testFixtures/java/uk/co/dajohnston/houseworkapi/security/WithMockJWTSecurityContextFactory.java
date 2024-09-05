@@ -26,7 +26,7 @@ public class WithMockJWTSecurityContextFactory implements WithSecurityContextFac
     var jwt =
         Jwt.withTokenValue("token")
             .header("alg", "none")
-            .claim("sub", "user")
+            .claim("sub", annotation.subject())
             .claim("scope", annotation.scope())
             .claim(customClaimNamespace + "/user", Map.of("email", annotation.emailAddress()))
             .claim(customClaimNamespace + "/roles", Arrays.asList(annotation.roles()))
