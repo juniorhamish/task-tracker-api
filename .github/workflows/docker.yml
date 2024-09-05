@@ -137,5 +137,5 @@ jobs:
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
           service: 'housework-api'
-          image: "docker.io/juniorhamish/housework-api:latest"
+          image: "docker.io/juniorhamish/housework-api:sha-9d38e13"
           region: "europe-west9"
