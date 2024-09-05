@@ -30,7 +30,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Unit Test
-        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -39,7 +38,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export Unit Test Reports
-        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -49,14 +47,13 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Unit Test Results Report
         uses: dorny/test-reporter@v1
-        if: github.event.pull_request.base.ref != null
+        if: always()
         with:
           name: Unit Test Results
           path: out/test-results/test/*.xml
           reporter: java-junit
           fail-on-error: true
       - name: Integration Test
-        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -69,7 +66,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export Integration Test Reports
-        if: github.event.pull_request.base.ref != null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -79,14 +75,14 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Integration Test Results Report
         uses: dorny/test-reporter@v1
-        if: github.event.pull_request.base.ref != null
+        if: always()
         with:
           name: Integration Test Results
           path: out/test-results/integrationTest/*.xml
           reporter: java-junit
           fail-on-error: true
       - name: Sonar Main
-        if: github.event.pull_request.base.ref != null
+        if: github.event.pull_request.base.ref == null
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -131,8 +127,8 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: 'google-github-actions/auth@v2'
         with:
-          workload_identity_provider: "projects/594170868558/locations/global/workloadIdentityPools/github-identity-pool/providers/github-actions-oidc"
-          service_account: "housework-api-sa@manifest-surfer-434311-n6.iam.gserviceaccount.com"
+          workload_identity_provider: "${{ secrets.WIF_PROVIDER }}"
+          service_account: "${{ secrets.WIF_SERVICE_ACCOUNT }}"
       - name: Deploy to Google
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: 'google-github-actions/deploy-cloudrun@v2'
