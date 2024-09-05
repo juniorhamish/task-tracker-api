@@ -46,8 +46,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.security:spring-security-oauth2-resource-server'
-    implementation 'org.springframework.security:spring-security-oauth2-jose'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'com.logtail:logback-logtail:0.3.4'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'org.mapstruct:mapstruct:1.6.0'
@@ -61,8 +60,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:5.13.0"
     testFixturesAnnotationProcessor 'org.projectlombok:lombok'
     testFixturesImplementation 'org.springframework.security:spring-security-test'
-    testFixturesImplementation 'org.springframework.security:spring-security-oauth2-resource-server'
-    testFixturesImplementation 'org.springframework.security:spring-security-oauth2-jose'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 }
 
 tasks.named('test') {
