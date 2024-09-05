@@ -47,6 +47,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'com.logtail:logback-logtail:0.3.4'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'org.mapstruct:mapstruct:1.6.0'
@@ -61,6 +63,15 @@ dependencies {
     testFixturesAnnotationProcessor 'org.projectlombok:lombok'
     testFixturesImplementation 'org.springframework.security:spring-security-test'
     testFixturesImplementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+}
+
+compileJava {
+    options.compilerArgs += [
+            '-Amapstruct.suppressGeneratorTimestamp=true',
+            '-Amapstruct.suppressGeneratorVersionInfoComment=true',
+            '-Amapstruct.defaultComponentModel=spring',
+            '-Amapstruct.defaultInjectionStrategy=constructor'
+    ]
 }
 
 tasks.named('test') {
