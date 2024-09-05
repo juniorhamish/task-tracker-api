@@ -60,8 +60,7 @@ dependencies {
     testImplementation "org.mockito:mockito-junit-jupiter:5.13.0"
     testFixturesAnnotationProcessor 'org.projectlombok:lombok'
     testFixturesImplementation 'org.springframework.security:spring-security-test'
-    testFixturesImplementation 'org.springframework.security:spring-security-oauth2-resource-server'
-    testFixturesImplementation 'org.springframework.security:spring-security-oauth2-jose'
+    testFixturesImplementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 }
 
 tasks.named('test') {
