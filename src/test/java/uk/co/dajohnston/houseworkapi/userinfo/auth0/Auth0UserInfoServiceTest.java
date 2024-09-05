@@ -96,4 +96,37 @@ class Auth0UserInfoServiceTest {
 
     assertThat(userInfo.nickname(), is("Dave"));
   }
+
+  @Test
+  void getUserInfo_setsNameFromTopLevel() {
+    Auth0User auth0User = new Auth0User("", "David Johnston", "", "", null);
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
+
+    UserInfoDTO userInfo =
+        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
+
+    assertThat(userInfo.name(), is("David Johnston"));
+  }
+
+  @Test
+  void getUserInfo_setsEmailFromTopLevel() {
+    Auth0User auth0User = new Auth0User("david@test.com", "", "", "", null);
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
+
+    UserInfoDTO userInfo =
+        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
+
+    assertThat(userInfo.email(), is("david@test.com"));
+  }
+
+  @Test
+  void getUserInfo_setsPictureFromTopLevel() {
+    Auth0User auth0User = new Auth0User("", "", "", "https://picture.com", null);
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
+
+    UserInfoDTO userInfo =
+        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
+
+    assertThat(userInfo.picture(), is("https://picture.com"));
+  }
 }
