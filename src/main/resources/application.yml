@@ -12,6 +12,16 @@ spring:
         jwt:
           audiences: https://housework-api.onrender.com
           issuer-uri: https://dajohnston.eu.auth0.com/
+      client:
+        registration:
+          auth0:
+            client-id: ${OAUTH_MANAGEMENT_API_CLIENT_ID}
+            client-secret: ${OAUTH_MANAGEMENT_API_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            provider: auth0
+        provider:
+          auth0:
+            issuer-uri: https://dajohnston.eu.auth0.com/
 jwt:
   claims:
     namespace: https://housework-api.onrender.com
