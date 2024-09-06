@@ -15,8 +15,8 @@ spring:
       client:
         registration:
           auth0:
-            client-id: env
-            client-secret: env
+            client-id: ${OAUTH_MANAGEMENT_API_CLIENT_ID}
+            client-secret: ${OAUTH_MANAGEMENT_API_CLIENT_SECRET}
             authorization-grant-type: client_credentials
             provider: auth0
         provider:
