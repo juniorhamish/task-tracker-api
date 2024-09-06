@@ -45,6 +45,7 @@ FROM integration-test AS sonar
 COPY .git ./.git
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SONAR_TOKEN \
+    --mount=type=secret,id=GITHUB_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
     export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN) && \
     ./gradlew --no-daemon \
@@ -57,6 +58,7 @@ ARG sonar_pull_request_key
 ARG sonar_pull_request_base
 RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SONAR_TOKEN \
+    --mount=type=secret,id=GITHUB_TOKEN \
     export SONAR_TOKEN=$(cat /run/secrets/SONAR_TOKEN) && \
     export GITHUB_TOKEN=$(cat /run/secrets/GITHUB_TOKEN) && \
     ./gradlew --no-daemon \
