@@ -6,11 +6,21 @@ import uk.co.dajohnston.houseworkapi.userinfo.model.UserInfoDTO;
 
 @Mapper
 public interface Auth0UserInfoMapper {
-  @Mapping(target = "firstName", source = "user_metadata.first_name")
-  @Mapping(target = "lastName", source = "user_metadata.last_name")
+  @Mapping(
+      target = "firstName",
+      source = "user_metadata.firstName",
+      defaultExpression = "java(auth0User.given_name())")
+  @Mapping(
+      target = "lastName",
+      source = "user_metadata.lastName",
+      defaultExpression = "java(auth0User.family_name())")
   @Mapping(
       target = "nickname",
       source = "user_metadata.nickname",
       defaultExpression = "java(auth0User.nickname())")
+  @Mapping(
+      target = "picture",
+      source = "user_metadata.picture",
+      defaultExpression = "java(auth0User.picture())")
   UserInfoDTO toUserInfoDTO(Auth0User auth0User);
 }
