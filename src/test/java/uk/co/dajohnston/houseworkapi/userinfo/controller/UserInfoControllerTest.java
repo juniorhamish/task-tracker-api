@@ -35,7 +35,6 @@ class UserInfoControllerTest {
         .thenReturn(
             new UserInfoDTO(
                 "email@test.com",
-                "David Johnston",
                 "David",
                 "Johnston",
                 "DJ",
@@ -51,7 +50,6 @@ class UserInfoControllerTest {
                           "firstName": "David",
                           "lastName": "Johnston",
                           "email": "email@test.com",
-                          "name": "David Johnston",
                           "nickname": "DJ",
                           "picture": "https://picture.com"
                         }

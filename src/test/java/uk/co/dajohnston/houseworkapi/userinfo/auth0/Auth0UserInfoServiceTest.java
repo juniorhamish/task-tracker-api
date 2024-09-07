@@ -57,7 +57,8 @@ class Auth0UserInfoServiceTest {
 
   @Test
   void getUserInfo_setsFirstNameFromMetaData() {
-    Auth0User auth0User = new Auth0User("", "", "", "", new Auth0UserMetaData("David", "", ""));
+    Auth0User auth0User =
+        new Auth0User("Joe", "", "", "", "", new Auth0UserMetaData("David", "", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfoDTO userInfo =
@@ -67,8 +68,21 @@ class Auth0UserInfoServiceTest {
   }
 
   @Test
+  void getUserInfo_setsFirstNameFromGivenNameWhenNotSetInMetaData() {
+    Auth0User auth0User =
+        new Auth0User("Joe", "", "", "", "", new Auth0UserMetaData(null, "", "", ""));
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
+
+    UserInfoDTO userInfo =
+        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
+
+    assertThat(userInfo.firstName(), is("Joe"));
+  }
+
+  @Test
   void getUserInfo_setsLastNameFromMetaData() {
-    Auth0User auth0User = new Auth0User("", "", "", "", new Auth0UserMetaData("", "Johnston", ""));
+    Auth0User auth0User =
+        new Auth0User("", "Bloggs", "", "", "", new Auth0UserMetaData("", "Johnston", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfoDTO userInfo =
@@ -78,8 +92,21 @@ class Auth0UserInfoServiceTest {
   }
 
   @Test
-  void getUserInfo_setsNicknameFromMetaData_whenPresent() {
-    Auth0User auth0User = new Auth0User("", "", "Dave", "", new Auth0UserMetaData("", "", "DJ"));
+  void getUserInfo_setsLastNameFromFamilyNameWhenNotSetInMetaData() {
+    Auth0User auth0User =
+        new Auth0User("", "Bloggs", "", "", "", new Auth0UserMetaData("", null, "", ""));
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
+
+    UserInfoDTO userInfo =
+        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
+
+    assertThat(userInfo.lastName(), is("Bloggs"));
+  }
+
+  @Test
+  void getUserInfo_setsNicknameFromMetaData() {
+    Auth0User auth0User =
+        new Auth0User("", "", "", "Dave", "", new Auth0UserMetaData("", "", "DJ", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfoDTO userInfo =
@@ -90,7 +117,8 @@ class Auth0UserInfoServiceTest {
 
   @Test
   void getUserInfo_setsNicknameFromTopLevel_whenNotPresentInMetaData() {
-    Auth0User auth0User = new Auth0User("", "", "Dave", "", new Auth0UserMetaData("", "", null));
+    Auth0User auth0User =
+        new Auth0User("", "", "", "Dave", "", new Auth0UserMetaData("", "", null, ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfoDTO userInfo =
@@ -100,19 +128,9 @@ class Auth0UserInfoServiceTest {
   }
 
   @Test
-  void getUserInfo_setsNameFromTopLevel() {
-    Auth0User auth0User = new Auth0User("", "David Johnston", "", "", null);
-    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
-
-    UserInfoDTO userInfo =
-        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
-
-    assertThat(userInfo.name(), is("David Johnston"));
-  }
-
-  @Test
   void getUserInfo_setsEmailFromTopLevel() {
-    Auth0User auth0User = new Auth0User("david@test.com", "", "", "", null);
+    Auth0User auth0User =
+        new Auth0User("", "", "david@test.com", "", "", new Auth0UserMetaData("", "", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfoDTO userInfo =
@@ -122,8 +140,28 @@ class Auth0UserInfoServiceTest {
   }
 
   @Test
-  void getUserInfo_setsPictureFromTopLevel() {
-    Auth0User auth0User = new Auth0User("", "", "", "https://picture.com", null);
+  void getUserInfo_setsPictureFromMetaData() {
+    Auth0User auth0User =
+        new Auth0User(
+            "",
+            "",
+            "",
+            "",
+            "https://picture.com",
+            new Auth0UserMetaData("", "", "", "https://picture-meta.com"));
+    when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
+
+    UserInfoDTO userInfo =
+        new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class)).getUserInfo("");
+
+    assertThat(userInfo.picture(), is("https://picture-meta.com"));
+  }
+
+  @Test
+  void getUserInfo_setsPictureFromTopLevel_whenNotPresentInMetaData() {
+    Auth0User auth0User =
+        new Auth0User(
+            "", "", "", "", "https://picture.com", new Auth0UserMetaData("", "", "", null));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfoDTO userInfo =
