@@ -28,7 +28,6 @@ class UserInfoTest {
                     """
                         {
                           "email": "housework-api-integration-tests@dajohnston.co.uk",
-                          "name": "Integration Tests",
                           "firstName": null,
                           "lastName": null,
                           "nickname": "housework-api-integration-tests",
