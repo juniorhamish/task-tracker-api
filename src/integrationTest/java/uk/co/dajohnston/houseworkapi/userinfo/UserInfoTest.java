@@ -5,6 +5,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ class UserInfoTest {
 
   @Test
   @WithMockJWT(subject = "auth0|66dad01cbf661955d9db2534")
-  void getUserInfo_retrievesDataFromAuth0() throws Exception {
+  void userInfo_patchUpdatesInfoRetrievedByGet() throws Exception {
     int random = ThreadLocalRandom.current().nextInt(100000, 1000000);
 
     mockMvc.perform(
@@ -54,5 +55,22 @@ class UserInfoTest {
                     }
                     """
                         .formatted(random, random, random)));
+  }
+
+  @Test
+  @WithMockJWT(subject = "auth0|invalidid")
+  void updateUserInfo_invalidUserId_returns404() throws Exception {
+    mockMvc
+        .perform(
+            patch("/userinfo")
+                .with(csrf())
+                .contentType(APPLICATION_JSON)
+                .content(
+                    """
+                {
+                  "firstName": "New Name"
+                }
+                """))
+        .andExpect(status().isNotFound());
   }
 }
