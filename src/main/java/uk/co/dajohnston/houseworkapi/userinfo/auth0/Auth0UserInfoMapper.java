@@ -1,5 +1,6 @@
 package uk.co.dajohnston.houseworkapi.userinfo.auth0;
 
+import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import uk.co.dajohnston.houseworkapi.userinfo.model.UserInfoDTO;
@@ -23,4 +24,9 @@ public interface Auth0UserInfoMapper {
       source = "user_metadata.picture",
       defaultExpression = "java(auth0User.picture())")
   UserInfoDTO toUserInfoDTO(Auth0User auth0User);
+
+  @InheritInverseConfiguration
+  @Mapping(target = "nickname", ignore = true)
+  @Mapping(target = "picture", ignore = true)
+  Auth0User toAuth0User(UserInfoDTO userInfoDTO);
 }
