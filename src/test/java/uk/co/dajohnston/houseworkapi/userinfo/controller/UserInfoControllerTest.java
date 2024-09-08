@@ -1,9 +1,13 @@
 package uk.co.dajohnston.houseworkapi.userinfo.controller;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,12 +37,7 @@ class UserInfoControllerTest {
   void get_returnsUserInfoFromService() throws Exception {
     when(userInfoService.getUserInfo(anyString()))
         .thenReturn(
-            new UserInfoDTO(
-                "email@test.com",
-                "David",
-                "Johnston",
-                "DJ",
-                "https://picture.com"));
+            new UserInfoDTO("email@test.com", "David", "Johnston", "DJ", "https://picture.com"));
 
     mockMvc
         .perform(get("/userinfo"))
@@ -62,5 +61,80 @@ class UserInfoControllerTest {
     mockMvc.perform(get("/userinfo")).andExpect(status().isOk());
 
     verify(userInfoService).getUserInfo("abc123");
+  }
+
+  @Test
+  void patch_rejectsPayloadContainingEmailAddress() throws Exception {
+    mockMvc
+        .perform(
+            patch("/userinfo")
+                .content(
+                    """
+                    {
+                      "email": "email@test.com"
+                    }
+                    """)
+                .with(csrf())
+                .contentType(APPLICATION_JSON))
+        .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  @WithMockJWT(subject = "MyUserId")
+  void patch_usesServiceToUpdateUser() throws Exception {
+    mockMvc
+        .perform(
+            patch("/userinfo")
+                .content(
+                    """
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "nickname": "DJ",
+                      "picture": "https://picture.com/dj"
+                    }
+                    """)
+                .with(csrf())
+                .contentType(APPLICATION_JSON))
+        .andExpect(status().isOk());
+
+    verify(userInfoService)
+        .updateUserInfo(
+            "MyUserId", new UserInfoDTO(null, "David", "Johnston", "DJ", "https://picture.com/dj"));
+  }
+
+  @Test
+  void patch_returnsUpdatedUserInfo() throws Exception {
+    when(userInfoService.updateUserInfo(anyString(), any()))
+        .thenReturn(
+            new UserInfoDTO("dj@test.com", "David", "Johnston", "DJ", "https://picture.com/dj"));
+
+    mockMvc
+        .perform(
+            patch("/userinfo")
+                .content(
+                    """
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "nickname": "DJ",
+                      "picture": "https://picture.com/dj"
+                    }
+                    """)
+                .with(csrf())
+                .contentType(APPLICATION_JSON))
+        .andExpectAll(
+            status().isOk(),
+            content()
+                .json(
+                    """
+                        {
+                          "firstName": "David",
+                          "lastName": "Johnston",
+                          "email": "dj@test.com",
+                          "nickname": "DJ",
+                          "picture": "https://picture.com/dj"
+                        }
+                        """));
   }
 }

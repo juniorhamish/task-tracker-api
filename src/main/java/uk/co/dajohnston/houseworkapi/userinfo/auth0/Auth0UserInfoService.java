@@ -20,8 +20,23 @@ public class Auth0UserInfoService implements UserInfoService {
     return auth0UserInfoMapper.toUserInfoDTO(
         webClient
             .get()
-            .uri("users/" + id)
+            .uri("users/{id}", id)
             .attributes(clientRegistrationId("auth0"))
+            .accept(APPLICATION_JSON)
+            .retrieve()
+            .bodyToMono(Auth0User.class)
+            .block());
+  }
+
+  @Override
+  public UserInfoDTO updateUserInfo(String id, UserInfoDTO userInfoDTO) {
+    return auth0UserInfoMapper.toUserInfoDTO(
+        webClient
+            .patch()
+            .uri("users/{id}", id)
+            .attributes(clientRegistrationId("auth0"))
+            .bodyValue(auth0UserInfoMapper.toAuth0User(userInfoDTO))
+            .headers(httpHeaders -> httpHeaders.setContentType(APPLICATION_JSON))
             .accept(APPLICATION_JSON)
             .retrieve()
             .bodyToMono(Auth0User.class)
