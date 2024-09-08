@@ -61,6 +61,7 @@ class Auth0UserInfoServiceTest {
     when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
     when(requestHeadersSpec.headers(any())).thenReturn(requestHeadersSpec);
     when(requestHeadersSpec.accept(any())).thenReturn(requestHeadersSpec);
+    when(responseSpec.onStatus(any(), any())).thenReturn(responseSpec);
     auth0UserInfoService =
         new Auth0UserInfoService(webClient, getMapper(Auth0UserInfoMapper.class));
   }
