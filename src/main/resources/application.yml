@@ -4,7 +4,7 @@ server:
 spring:
   data:
     mongodb:
-      database: housework-api
+      database: task-tracker-api
       auto-index-creation: true
   security:
     oauth2:

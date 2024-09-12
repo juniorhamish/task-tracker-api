@@ -28,5 +28,7 @@ public interface Auth0UserInfoMapper {
   @InheritInverseConfiguration
   @Mapping(target = "nickname", ignore = true)
   @Mapping(target = "picture", ignore = true)
+  @Mapping(target = "given_name", ignore = true)
+  @Mapping(target = "family_name", ignore = true)
   Auth0User toAuth0User(UserInfoDTO userInfoDTO);
 }

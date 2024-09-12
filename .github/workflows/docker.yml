@@ -135,6 +135,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: 'google-github-actions/deploy-cloudrun@v2'
         with:
-          service: 'housework-api'
-          image: "docker.io/juniorhamish/housework-api:${{ github.sha }}"
+          service: 'task-tracker-api'
+          image: "${{ secrets.DOCKER_REPO }}:${{ github.sha }}"
           region: "europe-west9"

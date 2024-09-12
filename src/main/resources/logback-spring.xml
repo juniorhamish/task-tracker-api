@@ -2,7 +2,7 @@
 <configuration scan="true">
   <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
   <appender name="Logtail" class="com.logtail.logback.LogtailAppender">
-    <appName>Housework API</appName>
+    <appName>Task Tracker API</appName>
     <sourceToken>${BETTER_STACK_TOKEN}</sourceToken>
     <mdcFields>requestId,requestTime,traceId,spanId</mdcFields>
     <mdcTypes>string,int,string,string</mdcTypes>
