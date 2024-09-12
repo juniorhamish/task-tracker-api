@@ -36,6 +36,8 @@ springdoc:
       paths-to-match: /actuator/**
     - group: Users
       paths-to-match: /users/**
+    - group: User Info
+      paths-to-match: /userinfo/**
   show-actuator: true
   swagger-ui:
     display-request-duration: true
