@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          audiences: https://housework-api.onrender.com
+          audiences: https://task-tracker-api-594170868558.europe-west9.run.app
           issuer-uri: https://dajohnston.eu.auth0.com/
       client:
         registration:
@@ -24,7 +24,7 @@ spring:
             issuer-uri: https://dajohnston.eu.auth0.com/
 jwt:
   claims:
-    namespace: https://housework-api.onrender.com
+    namespace: https://task-tracker-api-594170868558.europe-west9.run.app
 management:
   endpoints:
     web:
