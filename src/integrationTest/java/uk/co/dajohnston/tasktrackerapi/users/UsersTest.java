@@ -29,19 +29,19 @@ class UsersTest {
   }
 
   @Test
-  @WithMockJWT(scope = "create:users read:users", subject = "ABC123")
+  @WithMockJWT(subject = "ABC123")
   void post_users_createsUser() throws Exception {
     mockMvc
         .perform(
             post("/users")
                 .content(
                     """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
                 .contentType(APPLICATION_JSON)
                 .with(csrf()))
         .andExpect(status().isCreated());
@@ -53,13 +53,13 @@ class UsersTest {
             content()
                 .json(
                     """
-               [
-                 {
-                   "firstName": "David",
-                   "lastName": "Johnston",
-                   "emailAddress": "david.johnston@example.com"
-                 }
-               ]
-               """));
+                        [
+                          {
+                            "firstName": "David",
+                            "lastName": "Johnston",
+                            "emailAddress": "david.johnston@example.com"
+                          }
+                        ]
+                        """));
   }
 }

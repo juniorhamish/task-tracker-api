@@ -31,56 +31,37 @@ class UsersAuthorizationTest {
                 .with(csrf())
                 .content(
                     """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
                 .contentType(APPLICATION_JSON))
         .andExpect(status().isUnauthorized());
   }
 
   @Test
   @WithMockJWT
-  void post_tokenWithoutWriteUsersScope_returns403Response() throws Exception {
+  void post_withToken_returns201Response() throws Exception {
     mockMvc
         .perform(
             post("/users")
                 .with(csrf())
                 .content(
                     """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
-                .contentType(APPLICATION_JSON))
-        .andExpect(status().isForbidden());
-  }
-
-  @Test
-  @WithMockJWT(scope = "create:users")
-  void post_tokenWithWriteUsersScope_returns201Response() throws Exception {
-    mockMvc
-        .perform(
-            post("/users")
-                .with(csrf())
-                .content(
-                    """
-                                      {
-                                        "firstName": "David",
-                                        "lastName": "Johnston",
-                                        "emailAddress": "david.johnston@example.com"
-                                      }
-                                      """)
+                    {
+                      "firstName": "David",
+                      "lastName": "Johnston",
+                      "emailAddress": "david.johnston@example.com"
+                    }
+                    """)
                 .contentType(APPLICATION_JSON))
         .andExpect(status().isCreated());
   }
 
   @Test
-  @WithMockJWT(scope = "create:users")
+  @WithMockJWT
   void post_requestWithoutCsrfToken_returns403Response() throws Exception {
     mockMvc
         .perform(
@@ -104,13 +85,7 @@ class UsersAuthorizationTest {
 
   @Test
   @WithMockJWT
-  void get_tokenWithoutReadUsersScope_returns403Response() throws Exception {
-    mockMvc.perform(get("/users")).andExpect(status().isForbidden());
-  }
-
-  @Test
-  @WithMockJWT(scope = "read:users")
-  void get_tokenWithReadUsersScope_returns200Response() throws Exception {
+  void get_withToken_returns200Response() throws Exception {
     mockMvc.perform(get("/users")).andExpect(status().isOk());
   }
 }

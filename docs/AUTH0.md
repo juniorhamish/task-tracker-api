@@ -24,14 +24,18 @@ The role information is not included in the token. I previously configured Auth0
 roles to a custom claim in the token as part of the post login flow, however I have now removed this
 in favour of just using scopes. If it needs to be added back in, remember to update the Auth0
 action.
+
 ```javascript
     if (event.authorization?.roles && event.authorization?.roles.length > 0) {
-        api.accessToken.setCustomClaim(namespace + 'roles', event.authorization?.roles);
-    }
+  api.accessToken.setCustomClaim(namespace + 'roles', event.authorization?.roles);
+}
 ```
+
 SpringBoot requires some extra processing to take the roles from the custom claim and add them into
 the collection of granted authorities.
+
 ```java
+
 @Bean
 public JwtAuthenticationConverter jwtAuthenticationConverter() {
   var originalConverter = new JwtGrantedAuthoritiesConverter();
@@ -48,3 +52,18 @@ public JwtAuthenticationConverter jwtAuthenticationConverter() {
   return jwtAuthenticationConverter;
 }
 ```
+
+## Scopes
+
+Initially I created a few roles and had Auth0 assign the basic user role to everyone on first login.
+This role then provided scopes like read:users and create:users, however this is overkill and I have
+removed it. Auth0 no longer adds the role to the user, so the scopes won't be present and I have
+removed the code that enforces them. If you ever want to look at scopes again, the controller
+methods should be annotated with:
+
+```
+@PreAuthorize("hasAuthority('SCOPE_create:users')")
+```
+
+where `create:users` is the name of the scope. `SCOPE_` is a prefix that identifies the `authority`
+as a scope.
