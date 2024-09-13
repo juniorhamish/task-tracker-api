@@ -82,14 +82,4 @@ class UsersServiceTest {
             new UserDTO("David", "Johnston", "david.johnston@example.com"),
             new UserDTO("Bobby", "Davro", "bobby.davro@example.com")));
   }
-
-  @Test
-  void findAllScopedUsers_returnsUserWithEmailAddressFromRepository() {
-    when(usersRepository.findByEmailAddress(any()))
-        .thenReturn(new UserEntity("David", "Johnston", "david.johnston@example.com"));
-
-    List<UserDTO> users = usersService.findScopedUsers("david.johnston@example.com");
-
-    assertThat(users, contains(new UserDTO("David", "Johnston", "david.johnston@example.com")));
-  }
 }

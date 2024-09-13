@@ -29,7 +29,7 @@ class UsersTest {
   }
 
   @Test
-  @WithMockJWT(scope = "create:users read:users", emailAddress = "david.johnston@example.com")
+  @WithMockJWT(scope = "create:users read:users", subject = "ABC123")
   void post_users_createsUser() throws Exception {
     mockMvc
         .perform(
