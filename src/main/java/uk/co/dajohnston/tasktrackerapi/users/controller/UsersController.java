@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,28 +46,14 @@ public class UsersController {
   @GetMapping("/users")
   @PreAuthorize("hasAuthority('SCOPE_read:users')")
   public List<UserDTO> findAll(JwtAuthenticationToken authentication) {
-    log.info("Finding all users.");
-    List<UserDTO> users;
-    if (hasAdminRole(authentication)) {
-      log.info("User is admin.");
-      users = usersService.findAll();
-    } else {
-      String emailAddress = emailAddress(authentication);
-      log.info("Finding users by email address {}", emailAddress);
-      users = usersService.findScopedUsers(emailAddress);
-    }
-    return users;
+    String emailAddress = emailAddress(authentication);
+    log.info("Finding users by email address {}", emailAddress);
+    return usersService.findScopedUsers(emailAddress);
   }
 
   private String emailAddress(JwtAuthenticationToken authentication) {
     Map<String, Object> userDetails =
         authentication.getToken().getClaimAsMap(customClaimNamespace + "/user");
     return (String) userDetails.get("email");
-  }
-
-  private static boolean hasAdminRole(Authentication authentication) {
-    return authentication.getAuthorities().stream()
-        .map(GrantedAuthority::getAuthority)
-        .anyMatch("ROLE_Admin"::equals);
   }
 }
