@@ -104,48 +104,6 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(
-      scope = "read:users",
-      roles = {"Admin"})
-  void get_userHasReadUsersScopeAndAdminRole_returnsAllUsers() throws Exception {
-    when(usersService.findAll())
-        .thenReturn(
-            List.of(
-                new UserDTO("David", "Johnston", "david.johnston@example.com"),
-                new UserDTO("Bobby", "Davro", "bobby.davro@example.com")));
-
-    mockMvc
-        .perform(get("/users"))
-        .andExpect(
-            content()
-                .json(
-                    """
-                    [
-                      {
-                        "firstName": "David",
-                        "lastName": "Johnston",
-                        "emailAddress": "david.johnston@example.com"
-                      },
-                      {
-                        "firstName": "Bobby",
-                        "lastName": "Davro",
-                        "emailAddress": "bobby.davro@example.com"
-                      }
-                    ]
-                    """));
-  }
-
-  @Test
-  @WithMockJWT(
-      scope = "read:users",
-      roles = {"Admin"})
-  void get_userHasReadUsersScopeAndAdminRole_findsAllUsersFromService() throws Exception {
-    mockMvc.perform(get("/users"));
-
-    verify(usersService).findAll();
-  }
-
-  @Test
   @WithMockJWT(scope = "read:users")
   void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
     when(usersService.findScopedUsers(any()))

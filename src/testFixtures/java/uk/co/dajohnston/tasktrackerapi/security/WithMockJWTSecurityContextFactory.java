@@ -2,7 +2,6 @@ package uk.co.dajohnston.tasktrackerapi.security;
 
 import static org.springframework.security.core.context.SecurityContextHolder.createEmptyContext;
 
-import java.util.Arrays;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WithMockJWTSecurityContextFactory implements WithSecurityContextFactory<WithMockJWT> {
 
-  private final JwtAuthenticationConverter jwtAuthenticationConverter;
-
   @Value("${jwt.claims.namespace}")
   private final String customClaimNamespace;
 
@@ -29,11 +26,10 @@ public class WithMockJWTSecurityContextFactory implements WithSecurityContextFac
             .claim("sub", annotation.subject())
             .claim("scope", annotation.scope())
             .claim(customClaimNamespace + "/user", Map.of("email", annotation.emailAddress()))
-            .claim(customClaimNamespace + "/roles", Arrays.asList(annotation.roles()))
             .build();
 
     SecurityContext context = createEmptyContext();
-    context.setAuthentication(jwtAuthenticationConverter.convert(jwt));
+    context.setAuthentication(new JwtAuthenticationConverter().convert(jwt));
     return context;
   }
 }
