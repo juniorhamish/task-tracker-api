@@ -63,8 +63,8 @@ jobs:
             "SPRING_DATA_MONGODB_URI=${{ secrets.SPRING_DATA_MONGODB_URI }}"
             "SPRING_DATA_MONGODB_DATABASE=IT_${{ github.run_id }}-${{ github.run_attempt }}"
             "BETTER_STACK_TOKEN=${{ secrets.BETTER_STACK_TOKEN }}"
-            "OAUTH_MANAGEMENT_API_CLIENT_ID=${{ secrets.OAUTH_MANAGEMENT_API_CLIENT_ID }}"
-            "OAUTH_MANAGEMENT_API_CLIENT_SECRET=${{ secrets.OAUTH_MANAGEMENT_API_CLIENT_SECRET }}"
+            "OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}"
+            "OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}"
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Export Integration Test Reports

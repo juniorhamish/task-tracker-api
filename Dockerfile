@@ -16,8 +16,8 @@ COPY ./src ./src
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew \
     --no-daemon \
-    clean build -x test -x integrationTest
-RUN rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
+    clean build -x test -x integrationTest \
+    && rm build/libs/*-plain.jar && mkdir -p build/dependency && (cd build/dependency; jar -xf ../libs/*.jar)
 
 FROM build AS test
 RUN --mount=type=cache,target=/root/.gradle \
@@ -30,13 +30,13 @@ RUN --mount=type=cache,target=/root/.gradle \
     --mount=type=secret,id=SPRING_DATA_MONGODB_URI \
     --mount=type=secret,id=SPRING_DATA_MONGODB_DATABASE \
     --mount=type=secret,id=BETTER_STACK_TOKEN \
-    --mount=type=secret,id=OAUTH_MANAGEMENT_API_CLIENT_ID \
-    --mount=type=secret,id=OAUTH_MANAGEMENT_API_CLIENT_SECRET \
+    --mount=type=secret,id=OAUTH_CLIENT_ID \
+    --mount=type=secret,id=OAUTH_CLIENT_SECRET \
     export SPRING_DATA_MONGODB_URI=$(cat /run/secrets/SPRING_DATA_MONGODB_URI) && \
     export SPRING_DATA_MONGODB_DATABASE=$(cat /run/secrets/SPRING_DATA_MONGODB_DATABASE) && \
     export BETTER_STACK_TOKEN=$(cat /run/secrets/BETTER_STACK_TOKEN) && \
-    export OAUTH_MANAGEMENT_API_CLIENT_ID=$(cat /run/secrets/OAUTH_MANAGEMENT_API_CLIENT_ID) && \
-    export OAUTH_MANAGEMENT_API_CLIENT_SECRET=$(cat /run/secrets/OAUTH_MANAGEMENT_API_CLIENT_SECRET) && \
+    export OAUTH_CLIENT_ID=$(cat /run/secrets/OAUTH_CLIENT_ID) && \
+    export OAUTH_CLIENT_SECRET=$(cat /run/secrets/OAUTH_CLIENT_SECRET) && \
     ./gradlew --no-daemon \
     -Dtest.ignoreFailures=true \
     integrationTest
