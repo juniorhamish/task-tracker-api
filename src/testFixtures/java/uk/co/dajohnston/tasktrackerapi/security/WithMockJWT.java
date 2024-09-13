@@ -10,7 +10,5 @@ public @interface WithMockJWT {
 
   String scope() default "";
 
-  String emailAddress() default "";
-
   String subject() default "";
 }

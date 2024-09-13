@@ -1,6 +1,5 @@
 package uk.co.dajohnston.tasktrackerapi.users;
 
-import static java.util.Collections.singletonList;
 import static java.util.stream.StreamSupport.stream;
 
 import java.util.List;
@@ -28,9 +27,5 @@ public class UsersService {
 
   public List<UserDTO> findAll() {
     return stream(usersRepository.findAll().spliterator(), false).map(userMapper::toDTO).toList();
-  }
-
-  public List<UserDTO> findScopedUsers(String emailAddress) {
-    return singletonList(userMapper.toDTO(usersRepository.findByEmailAddress(emailAddress)));
   }
 }

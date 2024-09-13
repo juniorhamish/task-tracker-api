@@ -105,8 +105,8 @@ class UsersControllerTest {
 
   @Test
   @WithMockJWT(scope = "read:users")
-  void get_userHasReadUsersScope_returnsScopedUsers() throws Exception {
-    when(usersService.findScopedUsers(any()))
+  void get_userHasReadUsersScope_returnsAllUsers() throws Exception {
+    when(usersService.findAll())
         .thenReturn(List.of(new UserDTO("David", "Johnston", "david.johnston@example.com")));
 
     mockMvc
@@ -126,10 +126,10 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(scope = "read:users", emailAddress = "david.johnston@example.com")
-  void get_userHasReadUsersScope_findsScopedUsersFromServiceByEmailAddress() throws Exception {
+  @WithMockJWT(scope = "read:users", subject = "MyUserID")
+  void get_userHasReadUsersScope_findsAllUsersFromService() throws Exception {
     mockMvc.perform(get("/users"));
 
-    verify(usersService).findScopedUsers("david.johnston@example.com");
+    verify(usersService).findAll();
   }
 }
