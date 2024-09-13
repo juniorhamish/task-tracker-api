@@ -27,7 +27,7 @@ import uk.co.dajohnston.tasktrackerapi.users.controller.UsersController;
 @WebMvcTest(UsersController.class)
 @AutoConfigureMockMvc
 @Import(SecurityConfig.class)
-@WithMockJWT(scope = "read:users create:users")
+@WithMockJWT
 class UsersControllerTest {
 
   @Autowired private MockMvc mockMvc;
@@ -104,8 +104,8 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(scope = "read:users")
-  void get_userHasReadUsersScope_returnsAllUsers() throws Exception {
+  @WithMockJWT
+  void get_returnsAllUsers() throws Exception {
     when(usersService.findAll())
         .thenReturn(List.of(new UserDTO("David", "Johnston", "david.johnston@example.com")));
 
@@ -126,7 +126,7 @@ class UsersControllerTest {
   }
 
   @Test
-  @WithMockJWT(scope = "read:users", subject = "MyUserID")
+  @WithMockJWT(subject = "MyUserID")
   void get_userHasReadUsersScope_findsAllUsersFromService() throws Exception {
     mockMvc.perform(get("/users"));
 
