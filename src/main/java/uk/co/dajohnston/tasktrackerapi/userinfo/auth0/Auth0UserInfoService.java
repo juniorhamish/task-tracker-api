@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
-import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfoDTO;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.service.UserInfoService;
 
 @Service
@@ -22,8 +22,8 @@ public class Auth0UserInfoService implements UserInfoService {
   private final WebClient webClient;
   private final Auth0UserInfoMapper auth0UserInfoMapper;
 
-  public UserInfoDTO getUserInfo(String id) {
-    return auth0UserInfoMapper.toUserInfoDTO(
+  public UserInfo getUserInfo(String id) {
+    return auth0UserInfoMapper.toUserInfo(
         webClient
             .get()
             .uri("users/{id}", id)
@@ -35,13 +35,13 @@ public class Auth0UserInfoService implements UserInfoService {
   }
 
   @Override
-  public UserInfoDTO updateUserInfo(String id, UserInfoDTO userInfoDTO) {
-    return auth0UserInfoMapper.toUserInfoDTO(
+  public UserInfo updateUserInfo(String id, UserInfo userInfo) {
+    return auth0UserInfoMapper.toUserInfo(
         webClient
             .patch()
             .uri("users/{id}", id)
             .attributes(clientRegistrationId("auth0"))
-            .bodyValue(auth0UserInfoMapper.toAuth0User(userInfoDTO))
+            .bodyValue(auth0UserInfoMapper.toAuth0User(userInfo))
             .headers(httpHeaders -> httpHeaders.setContentType(APPLICATION_JSON))
             .accept(APPLICATION_JSON)
             .retrieve()

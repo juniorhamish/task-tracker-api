@@ -19,7 +19,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import uk.co.dajohnston.tasktrackerapi.exceptions.DuplicateResourceException;
-import uk.co.dajohnston.tasktrackerapi.users.controller.UserDTO;
+import uk.co.dajohnston.tasktrackerapi.users.controller.User;
 import uk.co.dajohnston.tasktrackerapi.users.repository.UserEntity;
 import uk.co.dajohnston.tasktrackerapi.users.repository.UsersRepository;
 
@@ -39,7 +39,7 @@ class UsersServiceTest {
 
   @Test
   void create_savesUserToRepository() {
-    UserDTO user = new UserDTO("David", "Johnston", "david.johnston@example.com");
+    User user = new User("David", "Johnston", "david.johnston@example.com");
     UserEntity userEntity = new UserEntity("David", "Johnston", "david.johnston@example.com");
 
     usersService.create(user);
@@ -52,18 +52,17 @@ class UsersServiceTest {
     when(usersRepository.save(any()))
         .thenReturn(new UserEntity("David", "Johnston", "david.johnston@example.com"));
 
-    UserDTO result = usersService.create(new UserDTO(null, null, null));
+    User result = usersService.create(new User(null, null, null));
 
-    assertThat(result, is(new UserDTO("David", "Johnston", "david.johnston@example.com")));
+    assertThat(result, is(new User("David", "Johnston", "david.johnston@example.com")));
   }
 
   @Test
   void create_duplicateEmail_throwsDuplicateException() {
-    UserEntity user = new UserEntity(null, null, "david.johnston@example.com");
-    when(usersRepository.save(user)).thenThrow(DuplicateKeyException.class);
+    when(usersRepository.save(new UserEntity(null, null, "david.johnston@example.com"))).thenThrow(DuplicateKeyException.class);
 
-    UserDTO userDTO = new UserDTO(null, null, "david.johnston@example.com");
-    assertThrows(DuplicateResourceException.class, () -> usersService.create(userDTO));
+    User user = new User(null, null, "david.johnston@example.com");
+    assertThrows(DuplicateResourceException.class, () -> usersService.create(user));
   }
 
   @Test
@@ -74,12 +73,12 @@ class UsersServiceTest {
                 new UserEntity("David", "Johnston", "david.johnston@example.com"),
                 new UserEntity("Bobby", "Davro", "bobby.davro@example.com")));
 
-    List<UserDTO> users = usersService.findAll();
+    List<User> users = usersService.findAll();
 
     assertThat(
         users,
         contains(
-            new UserDTO("David", "Johnston", "david.johnston@example.com"),
-            new UserDTO("Bobby", "Davro", "bobby.davro@example.com")));
+            new User("David", "Johnston", "david.johnston@example.com"),
+            new User("Bobby", "Davro", "bobby.davro@example.com")));
   }
 }

@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import uk.co.dajohnston.tasktrackerapi.exceptions.DuplicateResourceException;
 import uk.co.dajohnston.tasktrackerapi.security.SecurityConfig;
 import uk.co.dajohnston.tasktrackerapi.security.WithMockJWT;
-import uk.co.dajohnston.tasktrackerapi.users.controller.UserDTO;
+import uk.co.dajohnston.tasktrackerapi.users.controller.User;
 import uk.co.dajohnston.tasktrackerapi.users.controller.UsersController;
 
 @WebMvcTest(UsersController.class)
@@ -37,7 +37,7 @@ class UsersControllerTest {
   @Test
   void post_returnsCreatedUser() throws Exception {
     when(usersService.create(any()))
-        .thenReturn(new UserDTO("First", "Last", "first.last@example.com"));
+        .thenReturn(new User("First", "Last", "first.last@example.com"));
 
     mockMvc
         .perform(
@@ -80,7 +80,7 @@ class UsersControllerTest {
                 """)
             .contentType(APPLICATION_JSON));
 
-    verify(usersService).create(new UserDTO("David", "Johnston", "david.johnston@example.com"));
+    verify(usersService).create(new User("David", "Johnston", "david.johnston@example.com"));
   }
 
   @Test
@@ -107,7 +107,7 @@ class UsersControllerTest {
   @WithMockJWT
   void get_returnsAllUsers() throws Exception {
     when(usersService.findAll())
-        .thenReturn(List.of(new UserDTO("David", "Johnston", "david.johnston@example.com")));
+        .thenReturn(List.of(new User("David", "Johnston", "david.johnston@example.com")));
 
     mockMvc
         .perform(get("/users"))
