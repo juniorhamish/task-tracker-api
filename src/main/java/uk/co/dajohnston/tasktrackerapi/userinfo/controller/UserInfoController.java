@@ -34,7 +34,7 @@ public class UserInfoController {
   @PatchMapping
   public UserInfo update(JwtAuthenticationToken authentication, @RequestBody UserInfo userInfo) {
     String userId = authentication.getToken().getSubject();
-    log.info("Patching user info {} for user '{}'", userInfo, userId);
+    log.info("Patching user info for user '{}'", userId);
     if (userInfo.email() != null) {
       log.error("User '{}' attempted to change email address.", userId);
       throw new ResponseStatusException(BAD_REQUEST, "Email is read only");
