@@ -3,7 +3,7 @@ package uk.co.dajohnston.tasktrackerapi.userinfo.auth0;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfoDTO;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 
 @Mapper
 public interface Auth0UserInfoMapper {
@@ -23,12 +23,12 @@ public interface Auth0UserInfoMapper {
       target = "picture",
       source = "user_metadata.picture",
       defaultExpression = "java(auth0User.picture())")
-  UserInfoDTO toUserInfoDTO(Auth0User auth0User);
+  UserInfo toUserInfo(Auth0User auth0User);
 
   @InheritInverseConfiguration
   @Mapping(target = "nickname", ignore = true)
   @Mapping(target = "picture", ignore = true)
   @Mapping(target = "given_name", ignore = true)
   @Mapping(target = "family_name", ignore = true)
-  Auth0User toAuth0User(UserInfoDTO userInfoDTO);
+  Auth0User toAuth0User(UserInfo userInfo);
 }

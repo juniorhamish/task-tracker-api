@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.co.dajohnston.tasktrackerapi.security.SecurityConfig;
 import uk.co.dajohnston.tasktrackerapi.security.WithMockJWT;
-import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfoDTO;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.service.UserInfoService;
 
 @WebMvcTest(UserInfoController.class)
@@ -37,7 +37,7 @@ class UserInfoControllerTest {
   void get_returnsUserInfoFromService() throws Exception {
     when(userInfoService.getUserInfo(anyString()))
         .thenReturn(
-            new UserInfoDTO("email@test.com", "David", "Johnston", "DJ", "https://picture.com"));
+            new UserInfo("email@test.com", "David", "Johnston", "DJ", "https://picture.com"));
 
     mockMvc
         .perform(get("/userinfo"))
@@ -100,14 +100,14 @@ class UserInfoControllerTest {
 
     verify(userInfoService)
         .updateUserInfo(
-            "MyUserId", new UserInfoDTO(null, "David", "Johnston", "DJ", "https://picture.com/dj"));
+            "MyUserId", new UserInfo(null, "David", "Johnston", "DJ", "https://picture.com/dj"));
   }
 
   @Test
   void patch_returnsUpdatedUserInfo() throws Exception {
     when(userInfoService.updateUserInfo(anyString(), any()))
         .thenReturn(
-            new UserInfoDTO("dj@test.com", "David", "Johnston", "DJ", "https://picture.com/dj"));
+            new UserInfo("dj@test.com", "David", "Johnston", "DJ", "https://picture.com/dj"));
 
     mockMvc
         .perform(

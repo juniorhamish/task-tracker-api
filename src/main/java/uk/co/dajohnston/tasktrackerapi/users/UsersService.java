@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import uk.co.dajohnston.tasktrackerapi.exceptions.DuplicateResourceException;
-import uk.co.dajohnston.tasktrackerapi.users.controller.UserDTO;
+import uk.co.dajohnston.tasktrackerapi.users.controller.User;
 import uk.co.dajohnston.tasktrackerapi.users.repository.UsersRepository;
 
 @Service
@@ -17,7 +17,7 @@ public class UsersService {
   private final UsersRepository usersRepository;
   private final UserMapper userMapper;
 
-  public UserDTO create(UserDTO user) {
+  public User create(User user) {
     try {
       return userMapper.toDTO(usersRepository.save(userMapper.toEntity(user)));
     } catch (DuplicateKeyException e) {
@@ -25,7 +25,7 @@ public class UsersService {
     }
   }
 
-  public List<UserDTO> findAll() {
+  public List<User> findAll() {
     return stream(usersRepository.findAll().spliterator(), false).map(userMapper::toDTO).toList();
   }
 }

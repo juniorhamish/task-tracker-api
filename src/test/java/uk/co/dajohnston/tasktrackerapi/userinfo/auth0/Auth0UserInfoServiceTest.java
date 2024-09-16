@@ -22,7 +22,7 @@ import org.springframework.web.reactive.function.client.WebClient.RequestBodyUri
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
-import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfoDTO;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 
 class Auth0UserInfoServiceTest {
 
@@ -77,7 +77,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("Joe", "", "", "", "", new Auth0UserMetaData("David", "", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.firstName(), is("David"));
   }
@@ -88,7 +88,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("Joe", "", "", "", "", new Auth0UserMetaData(null, "", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.firstName(), is("Joe"));
   }
@@ -99,7 +99,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("", "Bloggs", "", "", "", new Auth0UserMetaData("", "Johnston", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.lastName(), is("Johnston"));
   }
@@ -110,7 +110,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("", "Bloggs", "", "", "", new Auth0UserMetaData("", null, "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.lastName(), is("Bloggs"));
   }
@@ -121,7 +121,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("", "", "", "Dave", "", new Auth0UserMetaData("", "", "DJ", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.nickname(), is("DJ"));
   }
@@ -132,7 +132,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("", "", "", "Dave", "", new Auth0UserMetaData("", "", null, ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.nickname(), is("Dave"));
   }
@@ -143,7 +143,7 @@ class Auth0UserInfoServiceTest {
         new Auth0User("", "", "david@test.com", "", "", new Auth0UserMetaData("", "", "", ""));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.email(), is("david@test.com"));
   }
@@ -160,7 +160,7 @@ class Auth0UserInfoServiceTest {
             new Auth0UserMetaData("", "", "", "https://picture-meta.com"));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.picture(), is("https://picture-meta.com"));
   }
@@ -172,7 +172,7 @@ class Auth0UserInfoServiceTest {
             "", "", "", "", "https://picture.com", new Auth0UserMetaData("", "", "", null));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
-    UserInfoDTO userInfo = auth0UserInfoService.getUserInfo("");
+    UserInfo userInfo = auth0UserInfoService.getUserInfo("");
 
     assertThat(userInfo.picture(), is("https://picture.com"));
   }
@@ -190,7 +190,7 @@ class Auth0UserInfoServiceTest {
   void updateUserInfo_setsFirstNameInMetaData() {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
-    auth0UserInfoService.updateUserInfo("", new UserInfoDTO(null, "David", null, null, null));
+    auth0UserInfoService.updateUserInfo("", new UserInfo(null, "David", null, null, null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -202,7 +202,7 @@ class Auth0UserInfoServiceTest {
   void updateUserInfo_setsLastNameInMetaData() {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
-    auth0UserInfoService.updateUserInfo("", new UserInfoDTO(null, null, "Johnston", null, null));
+    auth0UserInfoService.updateUserInfo("", new UserInfo(null, null, "Johnston", null, null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -214,7 +214,7 @@ class Auth0UserInfoServiceTest {
   void updateUserInfo_setsNicknameInMetaData() {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
-    auth0UserInfoService.updateUserInfo("", new UserInfoDTO(null, null, null, "DJ", null));
+    auth0UserInfoService.updateUserInfo("", new UserInfo(null, null, null, "DJ", null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -227,7 +227,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "", new UserInfoDTO(null, null, null, null, "https://picture.com/dj"));
+        "", new UserInfo(null, null, null, null, "https://picture.com/dj"));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -244,7 +244,7 @@ class Auth0UserInfoServiceTest {
   void updateUserInfo_sendsRequestToUsersAPIWithUserId() {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
-    auth0UserInfoService.updateUserInfo("ABC123", new UserInfoDTO(null, null, null, null, null));
+    auth0UserInfoService.updateUserInfo("ABC123", new UserInfo(null, null, null, null, null));
 
     verify(requestBodyUriSpec).uri("users/{id}", "ABC123");
   }
@@ -262,12 +262,12 @@ class Auth0UserInfoServiceTest {
                     "https://picture.com/jb",
                     new Auth0UserMetaData("David", "Johnston", "DJ", "https://picture.com/dj"))));
 
-    UserInfoDTO userInfoDTO =
+    UserInfo userInfo =
         auth0UserInfoService.updateUserInfo(
-            "ABC123", new UserInfoDTO(null, "David", "Johnston", "DJ", "https://picture.com/dj"));
+            "ABC123", new UserInfo(null, "David", "Johnston", "DJ", "https://picture.com/dj"));
 
     assertThat(
-        userInfoDTO,
-        is(new UserInfoDTO("dj@test.com", "David", "Johnston", "DJ", "https://picture.com/dj")));
+        userInfo,
+        is(new UserInfo("dj@test.com", "David", "Johnston", "DJ", "https://picture.com/dj")));
   }
 }

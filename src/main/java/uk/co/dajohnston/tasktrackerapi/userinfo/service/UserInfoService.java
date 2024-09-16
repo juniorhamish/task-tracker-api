@@ -1,10 +1,10 @@
 package uk.co.dajohnston.tasktrackerapi.userinfo.service;
 
-import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfoDTO;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 
 public interface UserInfoService {
 
-  UserInfoDTO getUserInfo(String id);
+  UserInfo getUserInfo(String id);
 
-  UserInfoDTO updateUserInfo(String id, UserInfoDTO userInfoDTO);
+  UserInfo updateUserInfo(String id, UserInfo userInfo);
 }

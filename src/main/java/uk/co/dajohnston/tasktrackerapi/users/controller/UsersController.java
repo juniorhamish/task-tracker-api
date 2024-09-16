@@ -3,6 +3,7 @@ package uk.co.dajohnston.tasktrackerapi.users.controller;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +20,14 @@ import uk.co.dajohnston.tasktrackerapi.users.UsersService;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@Tag(name = "Users")
 public class UsersController {
 
   private final UsersService usersService;
 
   @PostMapping("/users")
   @ResponseStatus(CREATED)
-  public UserDTO create(@RequestBody UserDTO user, JwtAuthenticationToken authentication) {
+  public User create(@RequestBody User user, JwtAuthenticationToken authentication) {
     log.info("{} is creating user {}.", authentication.getToken().getSubject(), user);
     try {
       return usersService.create(user);
@@ -37,7 +39,7 @@ public class UsersController {
   }
 
   @GetMapping("/users")
-  public List<UserDTO> findAll(JwtAuthenticationToken authentication) {
+  public List<User> getAll(JwtAuthenticationToken authentication) {
     log.info("{} is getting all users.", authentication.getToken().getSubject());
     return usersService.findAll();
   }
