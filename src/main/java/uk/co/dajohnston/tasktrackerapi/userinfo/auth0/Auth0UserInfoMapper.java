@@ -23,6 +23,14 @@ public interface Auth0UserInfoMapper {
       target = "picture",
       source = "user_metadata.picture",
       defaultExpression = "java(auth0User.picture())")
+  @Mapping(
+      target = "gravatarEmailAddress",
+      source = "user_metadata.gravatarEmailAddress",
+      defaultExpression = "java(auth0User.email())")
+  @Mapping(
+      target = "avatarImageSource",
+      source = "user_metadata.avatarImageSource",
+      defaultExpression = "java(AvatarSource.GRAVATAR)")
   UserInfo toUserInfo(Auth0User auth0User);
 
   @InheritInverseConfiguration

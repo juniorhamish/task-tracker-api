@@ -35,10 +35,13 @@ class UserInfoTest {
                 {
                   "firstName": "Integration %s",
                   "lastName": "Tests %s",
-                  "nickname": "tasktracker-api-integration-tests %s"
+                  "nickname": "tasktracker-api-integration-tests %s",
+                  "picture": "Picture %s",
+                  "gravatarEmailAddress": "gravatar%s@email.com",
+                  "avatarImageSource": "MANUAL"
                 }
                 """
-                    .formatted(random, random, random)));
+                    .formatted(random, random, random, random, random)));
 
     mockMvc
         .perform(get("/userinfo").with(csrf()))
@@ -51,10 +54,12 @@ class UserInfoTest {
                       "firstName": "Integration %s",
                       "lastName": "Tests %s",
                       "nickname": "tasktracker-api-integration-tests %s",
-                      "picture": "https://s.gravatar.com/avatar/7b91293197ba56e160fa3411c320b70e?s=480&r=pg&d=https%%3A%%2F%%2Fcdn.auth0.com%%2Favatars%%2Fho.png"
+                      "picture": "Picture %s",
+                      "gravatarEmailAddress": "gravatar%s@email.com",
+                      "avatarImageSource": "MANUAL"
                     }
                     """
-                        .formatted(random, random, random)));
+                        .formatted(random, random, random, random, random)));
   }
 
   @Test
