@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static uk.co.dajohnston.tasktrackerapi.userinfo.AvatarSource.GRAVATAR;
+import static uk.co.dajohnston.tasktrackerapi.userinfo.AvatarSource.MANUAL;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +39,14 @@ class UserInfoControllerTest {
   void get_returnsUserInfoFromService() throws Exception {
     when(userInfoService.getUserInfo(anyString()))
         .thenReturn(
-            new UserInfo("email@test.com", "David", "Johnston", "DJ", "https://picture.com"));
+            new UserInfo(
+                "email@test.com",
+                "David",
+                "Johnston",
+                "DJ",
+                "https://picture.com",
+                "gravatar@email.com",
+                GRAVATAR));
 
     mockMvc
         .perform(get("/userinfo"))
@@ -50,7 +59,9 @@ class UserInfoControllerTest {
                           "lastName": "Johnston",
                           "email": "email@test.com",
                           "nickname": "DJ",
-                          "picture": "https://picture.com"
+                          "picture": "https://picture.com",
+                          "gravatarEmailAddress": "gravatar@email.com",
+                          "avatarImageSource": "GRAVATAR"
                         }
                         """));
   }
@@ -91,7 +102,9 @@ class UserInfoControllerTest {
                       "firstName": "David",
                       "lastName": "Johnston",
                       "nickname": "DJ",
-                      "picture": "https://picture.com/dj"
+                      "picture": "https://picture.com/dj",
+                      "gravatarEmailAddress": "gravatar@email.com",
+                      "avatarImageSource": "GRAVATAR"
                     }
                     """)
                 .with(csrf())
@@ -100,14 +113,29 @@ class UserInfoControllerTest {
 
     verify(userInfoService)
         .updateUserInfo(
-            "MyUserId", new UserInfo(null, "David", "Johnston", "DJ", "https://picture.com/dj"));
+            "MyUserId",
+            new UserInfo(
+                null,
+                "David",
+                "Johnston",
+                "DJ",
+                "https://picture.com/dj",
+                "gravatar@email.com",
+                GRAVATAR));
   }
 
   @Test
   void patch_returnsUpdatedUserInfo() throws Exception {
     when(userInfoService.updateUserInfo(anyString(), any()))
         .thenReturn(
-            new UserInfo("dj@test.com", "David", "Johnston", "DJ", "https://picture.com/dj"));
+            new UserInfo(
+                "dj@test.com",
+                "David",
+                "Johnston",
+                "DJ",
+                "https://picture.com/dj",
+                "gravatar@email.com",
+                MANUAL));
 
     mockMvc
         .perform(
@@ -118,7 +146,9 @@ class UserInfoControllerTest {
                       "firstName": "David",
                       "lastName": "Johnston",
                       "nickname": "DJ",
-                      "picture": "https://picture.com/dj"
+                      "picture": "https://picture.com/dj",
+                      "gravatarEmailAddress": "gravatar@email.com",
+                      "avatarImageSource": "MANUAL"
                     }
                     """)
                 .with(csrf())
