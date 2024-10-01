@@ -24,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient.RequestBodyUri
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersSpec;
 import org.springframework.web.reactive.function.client.WebClient.RequestHeadersUriSpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.PartialUserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 
 class Auth0UserInfoServiceTest {
@@ -209,12 +210,7 @@ class Auth0UserInfoServiceTest {
   void getUserInfo_setsGravatarEmailAddressFromEmail_whenNotPresentInMetaData() {
     Auth0User auth0User =
         new Auth0User(
-            "",
-            "",
-            "test@email.com",
-            "",
-            "",
-            new Auth0UserMetaData("", "", "", "", null, MANUAL));
+            "", "", "test@email.com", "", "", new Auth0UserMetaData("", "", "", "", null, MANUAL));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfo userInfo = auth0UserInfoService.getUserInfo("");
@@ -225,13 +221,7 @@ class Auth0UserInfoServiceTest {
   @Test
   void getUserInfo_setsAvatarSourceFromMetaData() {
     Auth0User auth0User =
-        new Auth0User(
-            "",
-            "",
-            "",
-            "",
-            "",
-            new Auth0UserMetaData("", "", "", "", "", MANUAL));
+        new Auth0User("", "", "", "", "", new Auth0UserMetaData("", "", "", "", "", MANUAL));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfo userInfo = auth0UserInfoService.getUserInfo("");
@@ -242,13 +232,7 @@ class Auth0UserInfoServiceTest {
   @Test
   void getUserInfo_defaultsAvatarSourceToGravatar_whenNotPresentInMetaData() {
     Auth0User auth0User =
-        new Auth0User(
-            "",
-            "",
-            "",
-            "",
-            "",
-            new Auth0UserMetaData("", "", "", "", "", null));
+        new Auth0User("", "", "", "", "", new Auth0UserMetaData("", "", "", "", "", null));
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(just(auth0User));
 
     UserInfo userInfo = auth0UserInfoService.getUserInfo("");
@@ -270,7 +254,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "", new UserInfo(null, "David", null, null, null, null, null));
+        "", new PartialUserInfo("David", null, null, null, null, null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -288,7 +272,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "", new UserInfo(null, null, "Johnston", null, null, null, null));
+        "", new PartialUserInfo(null, "Johnston", null, null, null, null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -305,7 +289,8 @@ class Auth0UserInfoServiceTest {
   void updateUserInfo_setsNicknameInMetaData() {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
-    auth0UserInfoService.updateUserInfo("", new UserInfo(null, null, null, "DJ", null, null, null));
+    auth0UserInfoService.updateUserInfo(
+        "", new PartialUserInfo(null, null, "DJ", null, null, null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -323,7 +308,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "", new UserInfo(null, null, null, null, "https://picture.com/dj", null, null));
+        "", new PartialUserInfo(null, null, null, "https://picture.com/dj", null, null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -341,7 +326,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "", new UserInfo(null, null, null, null, null, "gravatar@email.com", null));
+        "", new PartialUserInfo(null, null, null, null, "gravatar@email.com", null));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -359,7 +344,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "", new UserInfo(null, null, null, null, null, null, GRAVATAR));
+        "", new PartialUserInfo(null, null, null, null, null, GRAVATAR));
 
     verify(requestBodySpec)
         .bodyValue(
@@ -377,7 +362,7 @@ class Auth0UserInfoServiceTest {
     when(responseSpec.bodyToMono(Auth0User.class)).thenReturn(empty());
 
     auth0UserInfoService.updateUserInfo(
-        "ABC123", new UserInfo(null, null, null, null, null, null, null));
+        "ABC123", new PartialUserInfo(null, null, null, null, null, null));
 
     verify(requestBodyUriSpec).uri("users/{id}", "ABC123");
   }
@@ -404,14 +389,8 @@ class Auth0UserInfoServiceTest {
     UserInfo userInfo =
         auth0UserInfoService.updateUserInfo(
             "ABC123",
-            new UserInfo(
-                null,
-                "David",
-                "Johnston",
-                "DJ",
-                "https://picture.com/dj",
-                "gravatar@email.com",
-                MANUAL));
+            new PartialUserInfo(
+                "David", "Johnston", "DJ", "https://picture.com/dj", "gravatar@email.com", MANUAL));
 
     assertThat(
         userInfo,
