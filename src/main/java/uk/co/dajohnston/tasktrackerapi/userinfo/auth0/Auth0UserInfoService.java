@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.PartialUserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.service.UserInfoService;
 
@@ -35,7 +36,7 @@ public class Auth0UserInfoService implements UserInfoService {
   }
 
   @Override
-  public UserInfo updateUserInfo(String id, UserInfo userInfo) {
+  public UserInfo updateUserInfo(String id, PartialUserInfo userInfo) {
     return auth0UserInfoMapper.toUserInfo(
         webClient
             .patch()
