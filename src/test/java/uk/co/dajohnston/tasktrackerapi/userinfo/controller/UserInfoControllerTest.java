@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.co.dajohnston.tasktrackerapi.security.SecurityConfig;
 import uk.co.dajohnston.tasktrackerapi.security.WithMockJWT;
+import uk.co.dajohnston.tasktrackerapi.userinfo.model.PartialUserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.model.UserInfo;
 import uk.co.dajohnston.tasktrackerapi.userinfo.service.UserInfoService;
 
@@ -75,22 +76,6 @@ class UserInfoControllerTest {
   }
 
   @Test
-  void patch_rejectsPayloadContainingEmailAddress() throws Exception {
-    mockMvc
-        .perform(
-            patch("/userinfo")
-                .content(
-                    """
-                    {
-                      "email": "email@test.com"
-                    }
-                    """)
-                .with(csrf())
-                .contentType(APPLICATION_JSON))
-        .andExpect(status().isBadRequest());
-  }
-
-  @Test
   @WithMockJWT(subject = "MyUserId")
   void patch_usesServiceToUpdateUser() throws Exception {
     mockMvc
@@ -114,8 +99,7 @@ class UserInfoControllerTest {
     verify(userInfoService)
         .updateUserInfo(
             "MyUserId",
-            new UserInfo(
-                null,
+            new PartialUserInfo(
                 "David",
                 "Johnston",
                 "DJ",
